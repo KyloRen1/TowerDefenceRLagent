@@ -1,0 +1,7 @@
+game: 
+  screen:
+    width: 500
+    height: 500
+    color: grey100
+  fps: 60
+  name: Tower Defence
