@@ -1,7 +1,11 @@
 game: 
   screen:
-    width: 500
-    height: 500
+    rows: 15
+    cols: 15
+    tile_size: 48
+    side_panel: 300
+    width: 720
+    height: 720
     color: grey100
   fps: 60
   name: Tower Defence
