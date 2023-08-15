@@ -1,8 +1,12 @@
 import pygame as pg 
 
 class Turret(pg.sprite.Sprite):
-    def __init__(self, cfg, image, tile_x, tile_y):
+    def __init__(self, cfg, sprite_sheet, tile_x, tile_y):
         super().__init__()
+
+        self.sprite_sheet = sprite_sheet
+        self.animation_list = 
+
         self.image = image 
         self.rect = self.image.get_rect()
 
@@ -13,8 +17,14 @@ class Turret(pg.sprite.Sprite):
         self.y = (tile_y + 0.5) * cfg.game.screen.tile_size
         self.rect.center = (self.x, self.y)
 
+    def load_images(self):
+        size = self.sprite_sheet.get_height()
+        animation_list = list()
+        for x in range(cfg.game.turret.animation_steps):
+            
 
-def create_turret(cfg, world, mouse_pos, cursor_turret, turret_group):
+
+def create_turret(cfg, world, mouse_pos, turret_sheet, turret_group):
     mouse_tile_x = mouse_pos[0] // cfg.game.screen.tile_size
     mouse_tile_y = mouse_pos[1] // cfg.game.screen.tile_size
     mouse_tile_num = (mouse_tile_y * cfg.game.screen.cols) + mouse_tile_x
@@ -25,6 +35,6 @@ def create_turret(cfg, world, mouse_pos, cursor_turret, turret_group):
                 space_is_free = False
         
         if space_is_free:
-            turret = Turret(cfg, cursor_turret, mouse_tile_x, mouse_tile_y)
+            turret = Turret(cfg, turret_sheet, mouse_tile_x, mouse_tile_y)
             turret_group.add(turret)
     return turret_group

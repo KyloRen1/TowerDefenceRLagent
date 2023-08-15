@@ -4,6 +4,7 @@ import pygame as pg
 from .enemy import Enemy
 from .world import World
 from .turret import Turret, create_turret
+from .button import Button
 
 from src.utils import load_config, create_game_screen
 
@@ -17,6 +18,8 @@ def main(cfg):
 
     screen, clock = create_game_screen(cfg)
 
+    placing_turrets = False
+
     enemy_group = pg.sprite.Group()
     turret_group = pg.sprite.Group()
 
@@ -27,10 +30,19 @@ def main(cfg):
     world = World(world_data, map_image)
 
     cursor_turret = pg.image.load('src/assets/images/turrets/cursor_turret.png').convert_alpha()
+    turret_sheet = pg.image.load('src/assets/images/turrets/turret_1.png').convert_alpha()
 
     enemy_image = pg.image.load('src/assets/images/enemies/enemy_1.png').convert_alpha()
     enemy = Enemy(world.waypoints, enemy_image)
     enemy_group.add(enemy)
+
+
+    buy_turret_image = pg.image.load('src/assets/images/buttons/buy_turret.png').convert_alpha()
+    cancel_image = pg.image.load('src/assets/images/buttons/cancel.png').convert_alpha()
+
+
+    turret_button = Button(cfg.game.screen.width + 30, 120, buy_turret_image)
+    cancel_button = Button(cfg.game.screen.width + 50, 180, cancel_image)
 
     run = True
     while run:
@@ -44,13 +56,27 @@ def main(cfg):
         enemy_group.draw(screen)
         turret_group.draw(screen)
 
+        if turret_button.draw(screen):
+            placing_turrets = True
+        
+        if placing_turrets:
+            cursor_rect = cursor_turret.get_rect()
+            cursor_pos = pg.mouse.get_pos()
+            cursor_rect.center = cursor_pos
+            if cursor_pos[0] <= cfg.game.screen.width:
+                screen.blit(cursor_turret, cursor_rect)
+            if cancel_button.draw(screen):
+                placing_turrets = False
+
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 run = False
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pg.mouse.get_pos()
                 if mouse_pos[0] < cfg.game.screen.width and mouse_pos[1] < cfg.game.screen.height:
-                    turret_group = create_turret(cfg, world, mouse_pos, cursor_turret, turret_group)
+                    if placing_turrets:
+                        turret_group = create_turret(cfg, world, mouse_pos, cursor_turret, turret_group)
 
         pg.display.flip()
 
