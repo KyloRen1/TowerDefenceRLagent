@@ -3,7 +3,7 @@ import json
 import pygame as pg
 from .enemy import Enemy
 from .world import World
-from .turret import Turret, create_turret
+from .turret import Turret, create_turret, select_turret, clear_selection
 from .button import Button
 
 from src.utils import load_config, create_game_screen
@@ -19,6 +19,7 @@ def main(cfg):
     screen, clock = create_game_screen(cfg)
 
     placing_turrets = False
+    selected_turret = None
 
     enemy_group = pg.sprite.Group()
     turret_group = pg.sprite.Group()
@@ -51,10 +52,15 @@ def main(cfg):
         screen.fill(cfg.game.screen.color)
         world.draw(screen)
 
+        if selected_turret:
+            selected_turret.selected = True
 
         enemy_group.update()
         enemy_group.draw(screen)
-        turret_group.draw(screen)
+        turret_group.update()
+        for turret in turret_group:
+            turret.draw(screen)
+
 
         if turret_button.draw(screen):
             placing_turrets = True
@@ -75,8 +81,12 @@ def main(cfg):
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pg.mouse.get_pos()
                 if mouse_pos[0] < cfg.game.screen.width and mouse_pos[1] < cfg.game.screen.height:
+                    selected_turret = None
+                    clear_selection(turret_group)
                     if placing_turrets:
                         turret_group = create_turret(cfg, world, mouse_pos, turret_sheet, turret_group)
+                    else:
+                        selected_turret = select_turret(cfg, mouse_pos, turret_group)
 
         pg.display.flip()
 

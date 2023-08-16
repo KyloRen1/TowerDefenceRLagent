@@ -11,3 +11,4 @@ game:
   name: Tower Defence
   turret:
     animation_steps: 8
+    animation_delay: 50
