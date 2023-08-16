@@ -76,7 +76,7 @@ def main(cfg):
                 mouse_pos = pg.mouse.get_pos()
                 if mouse_pos[0] < cfg.game.screen.width and mouse_pos[1] < cfg.game.screen.height:
                     if placing_turrets:
-                        turret_group = create_turret(cfg, world, mouse_pos, cursor_turret, turret_group)
+                        turret_group = create_turret(cfg, world, mouse_pos, turret_sheet, turret_group)
 
         pg.display.flip()
 

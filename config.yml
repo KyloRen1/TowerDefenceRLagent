@@ -9,3 +9,5 @@ game:
     color: grey100
   fps: 60
   name: Tower Defence
+  turret:
+    animation_steps: 8
