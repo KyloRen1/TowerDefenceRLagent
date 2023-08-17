@@ -9,6 +9,119 @@ game:
     color: grey100
   fps: 60
   name: Tower Defence
+  monet: 650
+  levels: 15
   turret:
     animation_steps: 8
     animation_delay: 50
+    levels: 4
+    buy_cost: 200
+    upgrade_cost: 100
+    kill_reward: 1
+    level_reward: 100
+    damage: 5
+    upgrades:
+        # level 1 
+      - range: 90
+        cooldown: 1500
+        # level 2
+      - range: 110
+        cooldown: 1200
+        # level 3
+      - range: 125
+        cooldown: 1000
+        # level 4
+      - range: 150
+        cooldown: 900
+  enemy:
+    health: 100
+    spawn_cooldown: 400
+    types:
+      weak: 
+        health: 10
+        speed: 2
+      medium: 
+        health: 15
+        speed: 3
+      strong:
+        health: 20
+        speed: 4
+      elite:
+        health: 30
+        speed: 6
+    levels:
+        # level 1
+      - weak: 15
+        medium: 0
+        strong: 0
+        elite: 0
+        # level 2
+      - weak: 30
+        medium: 0
+        strong: 0
+        elite: 0
+        # level 3
+      - weak: 20
+        medium: 5
+        strong: 0
+        elite: 0
+        # level 4
+      - weak: 30 
+        medium: 15
+        strong: 0
+        elite: 0
+        # level 5
+      - weak: 5
+        medium: 20
+        strong: 0
+        elite: 0
+        # level 6
+      - weak: 15
+        medium: 15
+        strong: 4
+        elite: 0
+        # level 7
+      - weak: 20 
+        medium: 25
+        strong: 5
+        elite: 0
+        # level 8
+      - weak: 10
+        medium: 20
+        strong: 15
+        elite: 0
+        # level 9
+      - weak: 15
+        medium: 10
+        strong: 5
+        elite: 0
+        # level 10
+      - weak: 0
+        medium: 100
+        strong: 0
+        elite: 0 
+        # level 11
+      - weak: 5
+        medium: 10
+        strong: 12
+        elite: 2
+        # level 12
+      - weak: 0 
+        medium: 15
+        strong: 10
+        elite: 5
+        # level 13
+      - weak: 20
+        medium: 0 
+        strong: 25
+        elite: 10
+        # level 14
+      - weak: 15
+        medium: 15
+        strong: 15
+        elite: 15
+        # level 15
+      - weak: 25
+        medium: 25
+        strong: 25
+        elite: 25
