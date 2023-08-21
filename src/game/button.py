@@ -1,10 +1,11 @@
 import pygame as pg
 
 class Button():
-  def __init__(self, x, y, image, single_click):
-    self.image = image
+  def __init__(self, cfg, button_name, single_click):
+    self.image = pg.image.load(
+      cfg.game.button[f"{button_name}"].image).convert_alpha()
     self.rect = self.image.get_rect()
-    self.rect.topleft = (x, y)
+    self.rect.topleft = cfg.game.button[f"{button_name}"].coord
     self.clicked = False
     self.single_click = single_click
 

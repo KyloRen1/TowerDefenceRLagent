@@ -1,4 +1,5 @@
 game: 
+  name: Tower Defence
   screen:
     rows: 15
     cols: 15
@@ -7,11 +8,51 @@ game:
     width: 720
     height: 720
     color: grey100
+    images:
+      heart: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/gui/heart.png
+      coin: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/gui/coin.png
+      logo: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/gui/logo.png
+  world:
+    map_image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/levels/level.png
+    world_data: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/levels/level.tmj
+    money: 650
+    health: 3
+  button:
+    buy_turret:
+      image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/buy_turret.png
+      coord: 
+        - 750
+        - 120
+    cancel:
+      image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/cancel.png
+      coord:
+       - 770
+       - 180
+    upgrade:
+      image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/upgrade_turret.png
+      coord:
+        - 725
+        - 180
+    begin:
+      image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/begin.png
+      coord: 
+       - 780
+       - 300
+    restart:
+      image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/restart.png
+      coord:
+       - 310
+       - 300
+    fast_forward:
+     image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/fast_forward.png
+     coord:
+      - 770
+      - 300
   fps: 60
-  name: Tower Defence
-  monet: 650
   levels: 15
+  level_complete_reward: 100
   turret:
+    cursor_turret: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/cursor_turret.png
     animation_steps: 8
     animation_delay: 50
     levels: 4
@@ -40,15 +81,19 @@ game:
       weak: 
         health: 10
         speed: 2
+        image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/enemies/enemy_1.png
       medium: 
         health: 15
         speed: 3
+        image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/enemies/enemy_2.png
       strong:
         health: 20
         speed: 4
+        image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/enemies/enemy_3.png
       elite:
         health: 30
         speed: 6
+        image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/enemies/enemy_4.png
     levels:
         # level 1
       - weak: 15

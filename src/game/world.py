@@ -1,18 +1,18 @@
-import pygame as pg
+import json
 import random
-#import constants as c
-#from enemy_data import ENEMY_SPAWN_DATA
+import pygame as pg
 
 class World():
-  def __init__(self, data, map_image):
+  def __init__(self, cfg):
+    self.cfg = cfg
     self.level = 1
     self.game_speed = 1
-    self.health = c.HEALTH
-    self.money = c.MONEY
+    self.health = cfg.game.world.health
+    self.money = cfg.game.world.money
     self.tile_map = []
     self.waypoints = []
-    self.level_data = data
-    self.image = map_image
+    self.level_data = json.load(open(cfg.game.world.world_data))
+    self.image = pg.image.load(cfg.game.world.map_image).convert_alpha()
     self.enemy_list = []
     self.spawned_enemies = 0
     self.killed_enemies = 0
@@ -36,7 +36,7 @@ class World():
       self.waypoints.append((temp_x, temp_y))
 
   def process_enemies(self):
-    enemies = ENEMY_SPAWN_DATA[self.level - 1]
+    enemies = self.cfg.game.enemy.levels[self.level - 1]
     for enemy_type in enemies:
       enemies_to_spawn = enemies[enemy_type]
       for enemy in range(enemies_to_spawn):
