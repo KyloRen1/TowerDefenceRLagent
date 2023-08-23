@@ -7,8 +7,10 @@ class Turret(pg.sprite.Sprite):
     pg.sprite.Sprite.__init__(self)
     self.cfg = cfg
     self.upgrade_level = 1
-    self.range = [rang for rang, coold in self.cfg.game.turret.upgrades]
-    self.cooldown = [coold for rang, coold in self.cfg.game.turret.upgrades]
+    self.ranges = [el.range for el in self.cfg.game.turret.upgrades]
+    self.cooldowns = [el.cooldown for el in self.cfg.game.turret.upgrades]
+    self.range = self.ranges[self.upgrade_level - 1]
+    self.cooldown = self.cooldowns[self.upgrade_level - 1]
     self.last_shot = pg.time.get_ticks()
     self.selected = False
     self.target = None
@@ -22,7 +24,7 @@ class Turret(pg.sprite.Sprite):
 
     #animation variables
     self.sprite_sheets = [
-      pg.image.load(path).convert_alpha() for path in cfg.turrent_path]
+      pg.image.load(path).convert_alpha() for path in cfg.game.turret.turret_spritesheets]
     self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
     self.frame_index = 0
     self.update_time = pg.time.get_ticks()
@@ -94,8 +96,8 @@ class Turret(pg.sprite.Sprite):
 
   def upgrade(self):
     self.upgrade_level += 1
-    self.range = [rang for rang, coold in self.cfg.game.turret.upgrades]
-    self.cooldown = [coold for rang, coold in self.cfg.game.turret.upgrades]
+    self.range = self.ranges[self.upgrade_level - 1]
+    self.cooldown = self.cooldowns[self.upgrade_level - 1]
     #upgrade turret image
     self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
     self.original_image = self.animation_list[self.frame_index]

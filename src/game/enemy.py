@@ -10,11 +10,11 @@ class Enemy(pg.sprite.Sprite):
     self.waypoints = waypoints
     self.pos = Vector2(self.waypoints[0])
     self.target_waypoint = 1
-    self.health = self.cfg.game.enemy.types['enemy_type'].health
-    self.speed = self.cfg.game.enemy.types['enemy_type'].speed
+    self.health = self.cfg.game.enemy.types[enemy_type].health
+    self.speed = self.cfg.game.enemy.types[enemy_type].speed
     self.angle = 0
     self.original_image = pg.image.load(
-      self.cfg.game.enemy.types['enemy_type'].image).convert_alpha()
+      self.cfg.game.enemy.types[enemy_type].image).convert_alpha()
     self.image = pg.transform.rotate(self.original_image, self.angle)
     self.rect = self.image.get_rect()
     self.rect.center = self.pos

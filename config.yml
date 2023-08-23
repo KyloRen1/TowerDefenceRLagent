@@ -16,7 +16,7 @@ game:
     map_image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/levels/level.png
     world_data: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/levels/level.tmj
     money: 650
-    health: 3
+    health: 50
   button:
     buy_turret:
       image: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/buttons/buy_turret.png
@@ -49,10 +49,15 @@ game:
       - 770
       - 300
   fps: 60
-  levels: 15
+  levels: 1
   level_complete_reward: 100
   turret:
     cursor_turret: /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/cursor_turret.png
+    turret_spritesheets:
+      - /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/turret_1.png
+      - /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/turret_2.png
+      - /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/turret_3.png
+      - /Users/bogdanivanyuk/Desktop/TowerDefenceRLagent/src/assets/images/turrets/turret_4.png
     animation_steps: 8
     animation_delay: 50
     levels: 4
@@ -60,7 +65,7 @@ game:
     upgrade_cost: 100
     kill_reward: 1
     level_reward: 100
-    damage: 5
+    damage: 10
     upgrades:
         # level 1 
       - range: 90

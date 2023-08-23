@@ -1,26 +1,25 @@
 import click
 import pygame as pg
 
-from src.utils import (
+from src.game.utils import (
   load_config, 
   create_game_window, 
   display_data, 
-  draw_text, coin_image)
-
+  draw_text,
+  game_result_plot)
 from src.game.world import World
 from src.game.button import Button
 from src.game.enemy import Enemy
 from src.game.turret import create_turret, select_turret, clear_selection
 
 
-
 @click.command(help="")
 @click.option("--cfg", type=str, help="config file path")
 def main(cfg):
   # loading config
-  cfg = load_config(cfg)
+  cfg = load_config(cfg)# initialise pygame
   # initializing game
-  screen, clock = create_game_window(cfg)
+  screen, clock, cursor_turret = create_game_window(cfg)
 
   # game variables
   game_over = False
@@ -29,9 +28,8 @@ def main(cfg):
   last_enemy_spawn = pg.time.get_ticks()
   placing_turrets = False
   selected_turret = None
-  cursor_turret = pg.image.load(cfg.game.turret.cursor_turret).convert_alpha()
 
-  # world
+  # create world
   world = World(cfg)
   world.process_data()
   world.process_enemies()
@@ -93,7 +91,7 @@ def main(cfg):
     # GAME PROGRESS SECTION
     #########################
 
-    if game_over is not False:
+    if game_over is False:
       # check if the level has been started or not
       if level_started is False:
         if begin_button.draw(screen):
@@ -107,7 +105,7 @@ def main(cfg):
         if pg.time.get_ticks() - last_enemy_spawn > cfg.game.enemy.spawn_cooldown:
           if world.spawned_enemies < len(world.enemy_list):
             enemy_type = world.enemy_list[world.spawned_enemies]
-            enemy = Enemy(enemy_type, world.waypoints)
+            enemy = Enemy(cfg, enemy_type, world.waypoints)
             enemy_group.add(enemy)
             world.spawned_enemies += 1
             last_enemy_spawn = pg.time.get_ticks()
@@ -121,13 +119,11 @@ def main(cfg):
         world.reset_level()
         world.process_enemies()
 
-
       # draw buttons
       # button for placing turrets
       # for the "turret button" show cost of turret and draw the button
-      draw_text(str(cfg.game.turret.buy_cost), "grey100", 
-        cfg.game.screen.width + 215, 135, large_font=False)
-      screen.blit(coin_image, (cfg.game.screen.width + 260, 130))
+      draw_text(screen, str(cfg.game.turret.buy_cost), 
+        "grey100", cfg.game.screen.width + 215, 135, large=False)
       if turret_button.draw(screen):
         placing_turrets = True
       # if placing turrets then show the cancel button as well
@@ -145,20 +141,14 @@ def main(cfg):
         # if a turret can be upgraded then show the upgrade button
         if selected_turret.upgrade_level < cfg.game.turret.levels:
           # show cost of upgrade and draw the button
-          draw_text(str(cfg.game.turret.upgrade_cost), "grey100", 
-            cfg.game.screen.width + 215, 195, large_font=False)
-          screen.blit(coin_image, (cfg.game.screen.width + 260, 190))
+          draw_text(screen, str(cfg.game.turret.upgrade_cost), 
+            "grey100", cfg.game.screen.width + 215, 195, large=False)
           if upgrade_button.draw(screen):
             if world.money >= cfg.game.turret.upgrade_cost:
               selected_turret.upgrade()
               world.money -= cfg.game.turret.upgrade_cost
     else:
-      pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius = 30)
-      if game_outcome == -1:
-        draw_text("GAME OVER", "grey0", 310, 230)
-      elif game_outcome == 1:
-        draw_text("YOU WIN!", "grey0", 315, 230)
-      # restart level
+      game_result_plot(screen, game_outcome)
       if restart_button.draw(screen):
         game_over = False
         level_started = False
@@ -171,7 +161,6 @@ def main(cfg):
         # empty groups
         enemy_group.empty()
         turret_group.empty()
-        
 
     #########################
     # EVENT HANDLING SECTION
@@ -184,15 +173,14 @@ def main(cfg):
       if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
         mouse_pos = pg.mouse.get_pos()
         # check if mouse is on the game area
-        if (mouse_pos[0] < cfg.game.screen.width and 
-            mouse_pos[1] < cfg.game.screen.height):
+        if mouse_pos[0] < cfg.game.screen.width and mouse_pos[1] < cfg.game.screen.height:
           # clear selected turrets
           selected_turret = None
           clear_selection(turret_group)
           if placing_turrets is True:
             # check if there is enough money for a turret
             if world.money >= cfg.game.turret.buy_cost:
-              create_turret(mouse_pos)
+              create_turret(cfg, mouse_pos, world, turret_group)
           else:
             selected_turret = select_turret(cfg, mouse_pos, turret_group)
 
