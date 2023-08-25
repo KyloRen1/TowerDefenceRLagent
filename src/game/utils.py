@@ -65,7 +65,14 @@ def create_game_window(cfg: EasyDict) -> Tuple[pg.Surface, pg.time.Clock, pg.Sur
   return screen, clock, cursor_turret
 
 
-def draw_text(screen: pg.Surface, text: str, text_col: int, x: int, y: int, large: bool=True) -> None:
+def draw_text(
+  screen: pg.Surface, 
+  text: str, 
+  text_col: int, 
+  x: int, 
+  y: int, 
+  large: bool=True
+  ) -> None:
   """ 
   Function for outputting text onto the screen
 
@@ -84,7 +91,11 @@ def draw_text(screen: pg.Surface, text: str, text_col: int, x: int, y: int, larg
   screen.blit(img, (x, y))
 
 
-def display_data(cfg: EasyDict, screen: pg.Surface, world: World) -> Tuple[pg.Surface, World]:
+def display_data(
+  cfg: EasyDict, 
+  screen: pg.Surface, 
+  world: World
+  ) -> Tuple[pg.Surface, World]:
   """ 
   Displaying data on side panel for game statistics
 

@@ -28,7 +28,8 @@ class Turret(pg.sprite.Sprite):
 
     # animation variables
     self.sprite_sheets = [
-      pg.image.load(path).convert_alpha() for path in cfg.game.turret.turret_spritesheets]
+      pg.image.load(path).convert_alpha() 
+      for path in cfg.game.turret.turret_spritesheets]
     self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
     self.frame_index = 0
     self.update_time = pg.time.get_ticks()

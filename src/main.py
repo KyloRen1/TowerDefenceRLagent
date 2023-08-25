@@ -171,7 +171,8 @@ def main(cfg):
       if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
         mouse_pos = pg.mouse.get_pos()
         # check if mouse is on the game area
-        if mouse_pos[0] < cfg.game.screen.width and mouse_pos[1] < cfg.game.screen.height:
+        if (mouse_pos[0] < cfg.game.screen.width and 
+            mouse_pos[1] < cfg.game.screen.height):
           # clear selected turrets
           selected_turret = None
           clear_selection(turret_group)
