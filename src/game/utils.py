@@ -1,6 +1,8 @@
 import yaml
 import pygame as pg
 from easydict import EasyDict
+from typing import Tuple
+from src.game.world import World
 
 # load fonts for displaying text on the screen
 text_font = None
@@ -12,14 +14,34 @@ heart_image = None
 logo_image = None
 
 
-def load_config(cfg_path):
-    with open(cfg_path, 'r') as f:
-        config = EasyDict(yaml.safe_load(f))
-    return config
+def load_config(cfg_path: str) -> EasyDict:
+  """ 
+    reading config file 
 
-def create_game_window(cfg):
+  Args:
+    cfg_path (str): path to the configuration file
+  Returns:
+    EasyDict: dictionary of configurations
+  """
+  with open(cfg_path, 'r') as f:
+    config = EasyDict(yaml.safe_load(f))
+  return config
+
+
+def create_game_window(cfg: EasyDict) -> Tuple[pg.Surface, pg.time.Clock, pg.Surface]:
   global text_font, large_font
   global coin_image, heart_image, logo_image
+  """ 
+    Creating game window, game clock and cursor turret image
+
+  Args:
+    cfg (EasyDict): dictionary of configurations
+  Returns:
+    screen (pg.Surface): game screen
+    clock (pg.time.Clock): game clock
+    cursor_turret (pg.Surface): image of a turret for cursor
+  """
+
   #initialise pygame
   pg.init()
   #create clock
@@ -29,6 +51,7 @@ def create_game_window(cfg):
     (cfg.game.screen.width + cfg.game.screen.side_panel, cfg.game.screen.height))
   pg.display.set_caption(cfg.game.name)
 
+  # initializing text fonts
   text_font = pg.font.SysFont("Consolas", 24, bold = True)
   large_font = pg.font.SysFont("Consolas", 36)
 
@@ -37,11 +60,27 @@ def create_game_window(cfg):
   coin_image = pg.image.load(cfg.game.screen.images.coin).convert_alpha()
   logo_image = pg.image.load(cfg.game.screen.images.logo).convert_alpha()
 
+  # loading cursor turret image
   cursor_turret = pg.image.load(cfg.game.turret.cursor_turret).convert_alpha()
   return screen, clock, cursor_turret
 
-#function for outputting text onto the screen
-def draw_text(screen, text, text_col, x, y, large=True):
+
+def draw_text(screen: pg.Surface, text: str, text_col: int, x: int, y: int, large: bool=True) -> None:
+  """ 
+  Function for outputting text onto the screen
+
+  Args:
+    screen (pg.Surface): game screen
+    text (str): text to write on the screen
+    text_col (int): 
+    x (int):
+    y (int):
+    large (bool):
+  Returns:
+    screen (pg.Surface): game screen
+    clock (pg.time.Clock): game clock
+    cursor_turret (pg.Surface): image of a turret for cursor
+  """
   if large:
     img = large_font.render(text, True, text_col)
   else:
@@ -49,7 +88,22 @@ def draw_text(screen, text, text_col, x, y, large=True):
   screen.blit(img, (x, y))
 
 
-def display_data(cfg, screen, world):
+def display_data(cfg: EasyDict, screen: pg.Surface, world) -> Tuple[pg.Surface, World]:
+  """ 
+  Function for outputting text onto the screen
+
+  Args:
+    screen (pg.Surface): game screen
+    text (str): text to write on the screen
+    text_col (int): 
+    x (int):
+    y (int):
+    large (bool):
+  Returns:
+    screen (pg.Surface): game screen
+    clock (pg.time.Clock): game clock
+    cursor_turret (pg.Surface): image of a turret for cursor
+  """
   # draw panel
   pg.draw.rect(screen, "maroon", 
     (cfg.game.screen.width, 0, cfg.game.screen.side_panel, cfg.game.screen.height))
@@ -69,7 +123,22 @@ def display_data(cfg, screen, world):
   return screen, world
 
 
-def game_result_plot(screen, game_outcome):
+def game_result_plot(screen: pg.Surface, game_outcome: bool) -> None:
+  """ 
+  Function for outputting text onto the screen
+
+  Args:
+    screen (pg.Surface): game screen
+    text (str): text to write on the screen
+    text_col (int): 
+    x (int):
+    y (int):
+    large (bool):
+  Returns:
+    screen (pg.Surface): game screen
+    clock (pg.time.Clock): game clock
+    cursor_turret (pg.Surface): image of a turret for cursor
+  """
   pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius = 30)
   if game_outcome == -1:
     draw_text(screen, "GAME OVER", "grey0", 310, 230, large=True)

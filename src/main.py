@@ -1,8 +1,7 @@
 import click
 import pygame as pg
 
-from src.game.utils import (
-  load_config, 
+from src.game.utils import (load_config, 
   create_game_window, 
   display_data, 
   draw_text,
@@ -21,13 +20,13 @@ def main(cfg):
   # initializing game
   screen, clock, cursor_turret = create_game_window(cfg)
 
-  # game variables
-  game_over = False
-  game_outcome = 0 # -1 is loss & 1 is win
-  level_started = False
-  last_enemy_spawn = pg.time.get_ticks()
-  placing_turrets = False
-  selected_turret = None
+  # game variabless
+  game_over:        bool = False
+  game_outcome:     int  = 0 # -1 is loss & 1 is win
+  level_started:    bool = False
+  last_enemy_spawn: int  = pg.time.get_ticks()
+  placing_turrets:  bool = False
+  selected_turret:  bool = None
 
   # create world
   world = World(cfg)
@@ -47,7 +46,7 @@ def main(cfg):
   turret_group = pg.sprite.Group()
 
   # game loop
-  run = True
+  run: bool = True
   while run:
     clock.tick(cfg.game.fps)
 
@@ -76,7 +75,6 @@ def main(cfg):
     #########################
     # DRAWING SECTION
     #########################
-
     # draw level
     world.draw(screen)
 
