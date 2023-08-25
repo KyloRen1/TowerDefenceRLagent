@@ -4,11 +4,11 @@ from easydict import EasyDict
 from typing import Tuple
 from src.game.world import World
 
-# load fonts for displaying text on the screen
+# fonts for displaying text on the screen
 text_font = None
 large_font = None
 
-# images 
+# gui images 
 coin_image = None
 heart_image = None
 logo_image = None
@@ -16,7 +16,7 @@ logo_image = None
 
 def load_config(cfg_path: str) -> EasyDict:
   """ 
-    reading config file 
+    Reading config file 
 
   Args:
     cfg_path (str): path to the configuration file
@@ -72,14 +72,10 @@ def draw_text(screen: pg.Surface, text: str, text_col: int, x: int, y: int, larg
   Args:
     screen (pg.Surface): game screen
     text (str): text to write on the screen
-    text_col (int): 
-    x (int):
-    y (int):
-    large (bool):
-  Returns:
-    screen (pg.Surface): game screen
-    clock (pg.time.Clock): game clock
-    cursor_turret (pg.Surface): image of a turret for cursor
+    text_col (int): index of column where to place text on the game table
+    x (int): x coordinate of the text position
+    y (int): y coordinate of the text position
+    large (bool): whether to write large / normal text size
   """
   if large:
     img = large_font.render(text, True, text_col)
@@ -88,21 +84,17 @@ def draw_text(screen: pg.Surface, text: str, text_col: int, x: int, y: int, larg
   screen.blit(img, (x, y))
 
 
-def display_data(cfg: EasyDict, screen: pg.Surface, world) -> Tuple[pg.Surface, World]:
+def display_data(cfg: EasyDict, screen: pg.Surface, world: World) -> Tuple[pg.Surface, World]:
   """ 
-  Function for outputting text onto the screen
+  Displaying data on side panel for game statistics
 
   Args:
+    cfg (EasyDict): dictionary of configurations
     screen (pg.Surface): game screen
-    text (str): text to write on the screen
-    text_col (int): 
-    x (int):
-    y (int):
-    large (bool):
+    world (World): class of the game world 
   Returns:
     screen (pg.Surface): game screen
-    clock (pg.time.Clock): game clock
-    cursor_turret (pg.Surface): image of a turret for cursor
+    world (World): class of the game world 
   """
   # draw panel
   pg.draw.rect(screen, "maroon", 
@@ -125,19 +117,11 @@ def display_data(cfg: EasyDict, screen: pg.Surface, world) -> Tuple[pg.Surface, 
 
 def game_result_plot(screen: pg.Surface, game_outcome: bool) -> None:
   """ 
-  Function for outputting text onto the screen
+  Game results plot
 
   Args:
     screen (pg.Surface): game screen
-    text (str): text to write on the screen
-    text_col (int): 
-    x (int):
-    y (int):
-    large (bool):
-  Returns:
-    screen (pg.Surface): game screen
-    clock (pg.time.Clock): game clock
-    cursor_turret (pg.Surface): image of a turret for cursor
+    game_outcome (bool): whether the result of the game is win or loss
   """
   pg.draw.rect(screen, "dodgerblue", (200, 200, 400, 200), border_radius = 30)
   if game_outcome == -1:

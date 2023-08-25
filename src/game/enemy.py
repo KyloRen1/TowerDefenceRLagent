@@ -19,12 +19,13 @@ class Enemy(pg.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.center = self.pos
 
-  def update(self, world):
+  def update(self, world) -> None:
     self.move(world)
     self.rotate()
     self.check_alive(world)
 
-  def move(self, world):
+  def move(self, world) -> None:
+    ''' movements of the enemy on the game screen '''
     # define a target waypoint
     if self.target_waypoint < len(self.waypoints):
       self.target = Vector2(self.waypoints[self.target_waypoint])
@@ -45,7 +46,8 @@ class Enemy(pg.sprite.Sprite):
         self.pos += self.movement.normalize() * dist
       self.target_waypoint += 1
 
-  def rotate(self):
+  def rotate(self) -> None:
+    ''' rotate enemy image when turning'''
     # calculate distance to next waypoint
     dist = self.target - self.pos
     # use distance to calculate angle
@@ -55,7 +57,7 @@ class Enemy(pg.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.center = self.pos
 
-  def check_alive(self, world):
+  def check_alive(self, world) -> None:
     if self.health <= 0:
       world.killed_enemies += 1
       world.money += self.cfg.game.turret.kill_reward

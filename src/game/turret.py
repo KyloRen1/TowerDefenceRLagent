@@ -1,9 +1,11 @@
 import pygame as pg
 import math
+from easydict import EasyDict
+from src.game.world import World
 
 
 class Turret(pg.sprite.Sprite):
-  def __init__(self, cfg, tile_x, tile_y):
+  def __init__(self, cfg:EasyDict , tile_x:int, tile_y:int) -> None:
     pg.sprite.Sprite.__init__(self)
     self.cfg = cfg
     self.upgrade_level = 1
@@ -11,32 +13,34 @@ class Turret(pg.sprite.Sprite):
     self.cooldowns = [el.cooldown for el in self.cfg.game.turret.upgrades]
     self.range = self.ranges[self.upgrade_level - 1]
     self.cooldown = self.cooldowns[self.upgrade_level - 1]
+    
     self.last_shot = pg.time.get_ticks()
     self.selected = False
     self.target = None
 
-    #position variables
+    # position variables
     self.tile_x = tile_x
     self.tile_y = tile_y
-    #calculate center coordinates
+
+    # calculate center coordinates
     self.x = (self.tile_x + 0.5) * self.cfg.game.screen.tile_size
     self.y = (self.tile_y + 0.5) * self.cfg.game.screen.tile_size
 
-    #animation variables
+    # animation variables
     self.sprite_sheets = [
       pg.image.load(path).convert_alpha() for path in cfg.game.turret.turret_spritesheets]
     self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
     self.frame_index = 0
     self.update_time = pg.time.get_ticks()
 
-    #update image
+    # update image
     self.angle = 90
     self.original_image = self.animation_list[self.frame_index]
     self.image = pg.transform.rotate(self.original_image, self.angle)
     self.rect = self.image.get_rect()
     self.rect.center = (self.x, self.y)
 
-    #create transparent circle showing range
+    # create transparent circle showing range
     self.range_image = pg.Surface((self.range * 2, self.range * 2))
     self.range_image.fill((0, 0, 0))
     self.range_image.set_colorkey((0, 0, 0))
@@ -45,8 +49,8 @@ class Turret(pg.sprite.Sprite):
     self.range_rect = self.range_image.get_rect()
     self.range_rect.center = self.rect.center
 
-  def load_images(self, sprite_sheet):
-    #extract images from spritesheet
+  def load_images(self, sprite_sheet:list) -> list:
+    ''' extract images from spritesheet '''
     size = sprite_sheet.get_height()
     animation_list = []
     for x in range(self.cfg.game.turret.animation_steps):
@@ -54,20 +58,20 @@ class Turret(pg.sprite.Sprite):
       animation_list.append(temp_img)
     return animation_list
 
-  def update(self, enemy_group, world):
-    #if target picked, play firing animation
+  def update(self, enemy_group, world:World) -> None:
+    # if target picked, play firing animation
     if self.target:
       self.play_animation()
     else:
-      #search for new target once turret has cooled down
+      # search for new target once turret has cooled down
       if pg.time.get_ticks() - self.last_shot > (self.cooldown / world.game_speed):
         self.pick_target(enemy_group)
 
-  def pick_target(self, enemy_group):
-    #find an enemy to target
+  def pick_target(self, enemy_group) -> None:
+    # find an enemy to target
     x_dist = 0
     y_dist = 0
-    #check distance to each enemy to see if it is in range
+    # check distance to each enemy to see if it is in range
     for enemy in enemy_group:
       if enemy.health > 0:
         x_dist = enemy.pos[0] - self.x
@@ -76,33 +80,34 @@ class Turret(pg.sprite.Sprite):
         if dist < self.range:
           self.target = enemy
           self.angle = math.degrees(math.atan2(-y_dist, x_dist))
-          #damage enemy
+          # damage enemy
           self.target.health -= self.cfg.game.turret.damage
           break
 
-  def play_animation(self):
-    #update image
+  def play_animation(self) -> None:
+    # update image
     self.original_image = self.animation_list[self.frame_index]
-    #check if enough time has passed since the last update
+    # check if enough time has passed since the last update
     if pg.time.get_ticks() - self.update_time > self.cfg.game.turret.animation_delay:
       self.update_time = pg.time.get_ticks()
       self.frame_index += 1
-      #check if the animation has finished and reset to idle
+      # check if the animation has finished and reset to idle
       if self.frame_index >= len(self.animation_list):
         self.frame_index = 0
-        #record completed time and clear target so cooldown can begin
+        # record completed time and clear target so cooldown can begin
         self.last_shot = pg.time.get_ticks()
         self.target = None
 
-  def upgrade(self):
+  def upgrade(self) -> None:
+    ''' upgrading turret '''
     self.upgrade_level += 1
     self.range = self.ranges[self.upgrade_level - 1]
     self.cooldown = self.cooldowns[self.upgrade_level - 1]
-    #upgrade turret image
+    # upgrade turret image
     self.animation_list = self.load_images(self.sprite_sheets[self.upgrade_level - 1])
     self.original_image = self.animation_list[self.frame_index]
 
-    #upgrade range circle
+    # upgrade range circle
     self.range_image = pg.Surface((self.range * 2, self.range * 2))
     self.range_image.fill((0, 0, 0))
     self.range_image.set_colorkey((0, 0, 0))
@@ -111,7 +116,7 @@ class Turret(pg.sprite.Sprite):
     self.range_rect = self.range_image.get_rect()
     self.range_rect.center = self.rect.center
 
-  def draw(self, surface):
+  def draw(self, surface) -> None:
     self.image = pg.transform.rotate(self.original_image, self.angle - 90)
     self.rect = self.image.get_rect()
     self.rect.center = (self.x, self.y)
@@ -120,7 +125,7 @@ class Turret(pg.sprite.Sprite):
       surface.blit(self.range_image, self.range_rect)
 
 
-def create_turret(cfg, mouse_pos, world, turret_group):
+def create_turret(cfg, mouse_pos, world, turret_group) -> None:
   mouse_tile_x = mouse_pos[0] // cfg.game.screen.tile_size
   mouse_tile_y = mouse_pos[1] // cfg.game.screen.tile_size
   #calculate the sequential number of the tile
@@ -147,6 +152,6 @@ def select_turret(cfg, mouse_pos, turret_group):
     if (mouse_tile_x, mouse_tile_y) == (turret.tile_x, turret.tile_y):
       return turret
 
-def clear_selection(turret_group):
+def clear_selection(turret_group) -> None:
   for turret in turret_group:
     turret.selected = False
