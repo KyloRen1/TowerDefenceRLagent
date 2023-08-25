@@ -23,7 +23,7 @@ game:
     map_image: src/assets/levels/level.png
     world_data: src/assets/levels/level.tmj
     money: 650
-    health: 50
+    health: 5
 
   # button parameters
   button:
@@ -87,7 +87,7 @@ game:
         # level 4
       - range: 150
         cooldown: 900
-        
+
   # enemy parameters
   enemy:
     health: 100
