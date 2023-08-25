@@ -1,7 +1,7 @@
 import yaml
 import pygame as pg
-from easydict import EasyDict
 from typing import Tuple
+from easydict import EasyDict
 from src.game.world import World
 
 # fonts for displaying text on the screen
@@ -14,7 +14,7 @@ heart_image = None
 logo_image = None
 
 
-def load_config(cfg_path: str) -> EasyDict:
+def load_config(cfg_path:str) -> EasyDict:
   """ 
     Reading config file 
 
@@ -28,7 +28,7 @@ def load_config(cfg_path: str) -> EasyDict:
   return config
 
 
-def create_game_window(cfg: EasyDict) -> Tuple[pg.Surface, pg.time.Clock, pg.Surface]:
+def create_game_window(cfg:EasyDict) -> Tuple[pg.Surface, pg.time.Clock, pg.Surface]:
   global text_font, large_font
   global coin_image, heart_image, logo_image
   """ 
@@ -66,12 +66,12 @@ def create_game_window(cfg: EasyDict) -> Tuple[pg.Surface, pg.time.Clock, pg.Sur
 
 
 def draw_text(
-  screen: pg.Surface, 
-  text: str, 
-  text_col: int, 
-  x: int, 
-  y: int, 
-  large: bool=True
+  screen:pg.Surface, 
+  text:str, 
+  text_col:int, 
+  x:int, 
+  y:int, 
+  large:bool=True
   ) -> None:
   """ 
   Function for outputting text onto the screen
@@ -92,9 +92,9 @@ def draw_text(
 
 
 def display_data(
-  cfg: EasyDict, 
-  screen: pg.Surface, 
-  world: World
+  cfg:EasyDict, 
+  screen:pg.Surface, 
+  world:World
   ) -> Tuple[pg.Surface, World]:
   """ 
   Displaying data on side panel for game statistics
@@ -126,7 +126,7 @@ def display_data(
   return screen, world
 
 
-def game_result_plot(screen: pg.Surface, game_outcome: bool) -> None:
+def game_result_plot(screen:pg.Surface, game_outcome:bool) -> None:
   """ 
   Game results plot
 

@@ -4,7 +4,7 @@ import pygame as pg
 from easydict import EasyDict
 
 class World():
-  def __init__(self, cfg: EasyDict) -> None:
+  def __init__(self, cfg:EasyDict) -> None:
     self.cfg = cfg
     self.level = 1
     self.game_speed = 1
@@ -32,7 +32,7 @@ class World():
           waypoint_data = obj["polyline"]
           self.process_waypoints(waypoint_data)
 
-  def process_waypoints(self, data: list) -> None:
+  def process_waypoints(self, data:list) -> None:
     ''' iterate through waypoints to extract individual sets of x and y coordinates '''
     for point in data:
       temp_x = point.get("x")
@@ -60,6 +60,6 @@ class World():
     self.killed_enemies = 0
     self.missed_enemies = 0
 
-  def draw(self, surface) -> None:
+  def draw(self, surface:pg.Surface) -> None:
     ''' drawing world image on the screen'''
     surface.blit(self.image, (0, 0))

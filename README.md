@@ -7,3 +7,6 @@
 - [ ] improve DQN 
 - [ ] github page
 - [ ] game level generation
+
+
+https://www.youtube.com/watch?v=L8ypSXwyBds

@@ -1,7 +1,8 @@
 import pygame as pg
+from easydict import EasyDict
 
 class Button():
-  def __init__(self, cfg, button_name, single_click) -> None:
+  def __init__(self, cfg:EasyDict, button_name:str, single_click:bool) -> None:
     self.image = pg.image.load(
       cfg.game.button[f"{button_name}"].image).convert_alpha()
     self.rect = self.image.get_rect()
@@ -9,7 +10,7 @@ class Button():
     self.clicked = False
     self.single_click = single_click
 
-  def draw(self, surface) -> bool:
+  def draw(self, surface:pg.Surface) -> bool:
     action = False
     # get mouse position
     pos = pg.mouse.get_pos()

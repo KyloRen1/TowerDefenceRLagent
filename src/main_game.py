@@ -1,10 +1,11 @@
 import click
 import pygame as pg
 
-from src.game.utils import (load_config, 
+from src.game.utils import (
+  load_config, 
   create_game_window, 
   display_data, 
-  draw_text,
+  draw_text, 
   game_result_plot)
 from src.game.world import World
 from src.game.button import Button
@@ -53,7 +54,6 @@ def main(cfg):
     #########################
     # UPDATING SECTION
     #########################
-
     if game_over is False:
       # check if player has lost
       if world.health <= 0:
@@ -88,7 +88,6 @@ def main(cfg):
     #########################
     # GAME PROGRESS SECTION
     #########################
-
     if game_over is False:
       # check if the level has been started or not
       if level_started is False:

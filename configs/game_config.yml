@@ -1,7 +1,7 @@
 game: 
   name: Tower Defence
   fps: 60
-  levels: 1
+  levels: 15
   level_complete_reward: 100
 
   # game screen parameters

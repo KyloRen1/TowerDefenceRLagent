@@ -1,5 +1,5 @@
-import pygame as pg
 import math
+import pygame as pg
 from easydict import EasyDict
 from src.game.world import World
 
@@ -59,7 +59,7 @@ class Turret(pg.sprite.Sprite):
       animation_list.append(temp_img)
     return animation_list
 
-  def update(self, enemy_group, world:World) -> None:
+  def update(self, enemy_group:pg.sprite.Group, world:World) -> None:
     # if target picked, play firing animation
     if self.target:
       self.play_animation()
@@ -68,7 +68,7 @@ class Turret(pg.sprite.Sprite):
       if pg.time.get_ticks() - self.last_shot > (self.cooldown / world.game_speed):
         self.pick_target(enemy_group)
 
-  def pick_target(self, enemy_group) -> None:
+  def pick_target(self, enemy_group:pg.sprite.Group) -> None:
     # find an enemy to target
     x_dist = 0
     y_dist = 0
@@ -117,7 +117,7 @@ class Turret(pg.sprite.Sprite):
     self.range_rect = self.range_image.get_rect()
     self.range_rect.center = self.rect.center
 
-  def draw(self, surface) -> None:
+  def draw(self, surface:pg.Surface) -> None:
     self.image = pg.transform.rotate(self.original_image, self.angle - 90)
     self.rect = self.image.get_rect()
     self.rect.center = (self.x, self.y)
@@ -126,7 +126,8 @@ class Turret(pg.sprite.Sprite):
       surface.blit(self.range_image, self.range_rect)
 
 
-def create_turret(cfg, mouse_pos, world, turret_group) -> None:
+def create_turret(cfg:EasyDict, mouse_pos:tuple, world:World, 
+    turret_group:pg.sprite.Group) -> None:
   mouse_tile_x = mouse_pos[0] // cfg.game.screen.tile_size
   mouse_tile_y = mouse_pos[1] // cfg.game.screen.tile_size
   #calculate the sequential number of the tile
@@ -146,13 +147,13 @@ def create_turret(cfg, mouse_pos, world, turret_group) -> None:
       world.money -= cfg.game.turret.buy_cost
 
 
-def select_turret(cfg, mouse_pos, turret_group):
+def select_turret(cfg:EasyDict, mouse_pos:tuple, turret_group:pg.sprite.Group):
   mouse_tile_x = mouse_pos[0] // cfg.game.screen.tile_size
   mouse_tile_y = mouse_pos[1] // cfg.game.screen.tile_size
   for turret in turret_group:
     if (mouse_tile_x, mouse_tile_y) == (turret.tile_x, turret.tile_y):
       return turret
 
-def clear_selection(turret_group) -> None:
+def clear_selection(turret_group:pg.sprite.Group) -> None:
   for turret in turret_group:
     turret.selected = False

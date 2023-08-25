@@ -2,8 +2,11 @@ import math
 import pygame as pg
 from pygame.math import Vector2
 
+from easydict import EasyDict
+from src.game.world import World
+
 class Enemy(pg.sprite.Sprite):
-  def __init__(self, cfg, enemy_type, waypoints):
+  def __init__(self, cfg:EasyDict, enemy_type:str, waypoints:list):
     pg.sprite.Sprite.__init__(self)
     self.cfg = cfg 
 
@@ -19,12 +22,12 @@ class Enemy(pg.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.center = self.pos
 
-  def update(self, world) -> None:
+  def update(self, world:World) -> None:
     self.move(world)
     self.rotate()
     self.check_alive(world)
 
-  def move(self, world) -> None:
+  def move(self, world:World) -> None:
     ''' movements of the enemy on the game screen '''
     # define a target waypoint
     if self.target_waypoint < len(self.waypoints):
@@ -57,7 +60,7 @@ class Enemy(pg.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.center = self.pos
 
-  def check_alive(self, world) -> None:
+  def check_alive(self, world:World) -> None:
     if self.health <= 0:
       world.killed_enemies += 1
       world.money += self.cfg.game.turret.kill_reward
