@@ -2,7 +2,7 @@
 
 - [x] PyGame Tower Defence game
 - [ ] test for the game
-- [ ] game as gym environment
+- [x] game as gym environment
 - [ ] DQN 
 - [ ] improve DQN 
 - [ ] github page
