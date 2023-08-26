@@ -3,6 +3,7 @@ game:
   fps: 60
   levels: 15
   level_complete_reward: 100
+  level_spawn_cooldown: 500
 
   # game screen parameters
   screen:

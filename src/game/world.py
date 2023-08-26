@@ -22,6 +22,9 @@ class World():
     self.killed_enemies = 0
     self.missed_enemies = 0
 
+    self.process_data()
+    self.process_enemies()
+
   def process_data(self) -> None:
     ''' look through data to extract relevant info '''
     for layer in self.level_data["layers"]:

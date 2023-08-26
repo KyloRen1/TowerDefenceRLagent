@@ -1,25 +1,18 @@
 import click
 import pygame as pg
 
-from src.game.utils import (
-  load_config, 
-  create_game_window, 
-  display_data, 
-  draw_text, 
-  game_result_plot)
-from src.game.world import World
-from src.game.button import Button
-from src.game.enemy import Enemy
-from src.game.turret import create_turret, select_turret, clear_selection
-
+from src.game.pipeline import TowerDefence
 
 @click.command(help="")
-@click.option("--cfg", type=str, help="config file path")
-def main(cfg):
+@click.option("--game-cfg", type=str, help="game config file path")
+@click.option("--agent-cfg", type=str, help="agent config file path")
+def main(game_cfg, agent_cfg):
     # actions: positions to place the turret; upgrade it
     # rewards: +1 for killed enemy, +100 for won game, -100 for lost game, -10 for lost life
     # state: image of the screen 
 
+    game = TowerDefence(game_cfg)
+    
     pass
 
 if __name__ == '__main__':
