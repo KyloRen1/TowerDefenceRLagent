@@ -28,7 +28,9 @@ class TowerDefence:
         self.enemy_group = pg.sprite.Group()
         self.turret_group = pg.sprite.Group()
 
+        # reset world and variables
         self.reset()
+
 
     def reset(self) -> None:
         # reset game variables
@@ -46,6 +48,7 @@ class TowerDefence:
         # reset groups
         self.enemy_group.empty()
         self.turret_group.empty()
+
 
     def _create_turret(self, tile_x, tile_y):
         # check if that tile is grass
@@ -88,6 +91,7 @@ class TowerDefence:
                 self.game_over = True 
                 self.game_outcome = 1 # win
 
+
     def _check_level_finished(self):
         if self.world.check_level_complete():
             self.world.money += self.cfg.game.level_complete_reward
@@ -98,56 +102,71 @@ class TowerDefence:
             self.world.reset_level()
             self.world.process_enemies()
 
+
     def _game_process(self):
-        if self.game_over is False:
-            if self.level_started is False:
-                # starting level
-                if (pg.time.get_ticks() - self.last_level > 
-                        self.cfg.game.level_spawn_cooldown):
-                    self.level_started = True
-            else:
-                # starting enemy spawn
-                if (pg.time.get_ticks() - self.last_enemy_spawn > 
-                        self.cfg.game.enemy.spawn_cooldown):
-                    if self.world.spawned_enemies < len(self.world.enemy_list):
-                        enemy_type = self.world.enemy_list[self.world.spawned_enemies]
-                        enemy = Enemy(self.cfg, enemy_type, self.world.waypoints)
-                        self.enemy_group.add(enemy)
-                        self.world.spawned_enemies += 1
-                        self.last_enemy_spawn = pg.time.get_ticks()
+        # checking is game is over
+        self._check_game_over()
+        if self.level_started is False:
+            # starting level
+            if (pg.time.get_ticks() - self.last_level > 
+                    self.cfg.game.level_spawn_cooldown):
+                self.level_started = True
+        else:
+            # starting enemy spawn
+            if (pg.time.get_ticks() - self.last_enemy_spawn > 
+                    self.cfg.game.enemy.spawn_cooldown):
+                if self.world.spawned_enemies < len(self.world.enemy_list):
+                    enemy_type = self.world.enemy_list[self.world.spawned_enemies]
+                    enemy = Enemy(self.cfg, enemy_type, self.world.waypoints)
+                    self.enemy_group.add(enemy)
+                    self.world.spawned_enemies += 1
+                    self.last_enemy_spawn = pg.time.get_ticks()
             
             # checking if level finished
             self._check_level_finished()
-        else:
-            # checking is game is over
-            self._check_game_over()
 
 
     def step(self, action) -> Tuple[int, bool, int]:
         self.frame += 1
+        
+        # values of health and number of killed enemies 
+        # at the beginning of the step
+        step_start_health = self.world.health
+        step_killed_enemies = self.world.killed_enemies
 
         # check if game quit 
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
+                quit()
 
-        # perform action
+        # perform action TODO logic
         # if action is to buy turret
         tile_x, tile_y = 1, 1 
         self._create_turret(tile_x, tile_y)
         # if action upgrade
-        self._upgrade_turret(tile_x, tile_y)
+        #self._upgrade_turret(tile_x, tile_y)
         
-
         # process game step
         self._game_process()
 
         # update ui and clock
         self._update_ui()
         self.clock.tick(self.cfg.game.fps)
-        reward = 0
+        
+        # constructing reward
+        if self.game_over:
+            # reward if 100 and -100 for won and lost game, respectively
+            reward = self.game_outcome * 100
+        else:
+            # if game is in progress, reward is the number of health lost 
+            health_diff = self.world.health - step_start_health 
+            # and the number of enemies killed in this step
+            killed_enemies_diff = self.world.killed_enemies - step_killed_enemies 
+            reward = health_diff + killed_enemies_diff
         
         return reward, self.game_over, self.world.health
+
 
     def _update_ui(self):
         # draw world on screen
@@ -177,13 +196,16 @@ def main(cfg):
 
     game = TowerDefence(config)
 
+    counter = 0
     while True:
         action = None
         reward, done, score = game.step(action)
+        print(counter, reward, done)
 
         if done:
-            # train long memory, plot result
             game.reset()
+
+        counter += 1
 
 
 if __name__ == '__main__':
