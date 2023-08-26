@@ -5,63 +5,64 @@ from pygame.math import Vector2
 from easydict import EasyDict
 from src.game.world import World
 
+
 class Enemy(pg.sprite.Sprite):
-  def __init__(self, cfg:EasyDict, enemy_type:str, waypoints:list):
-    pg.sprite.Sprite.__init__(self)
-    self.cfg = cfg 
+    def __init__(self, cfg: EasyDict, enemy_type: str, waypoints: list):
+        pg.sprite.Sprite.__init__(self)
+        self.cfg = cfg
 
-    self.waypoints = waypoints
-    self.pos = Vector2(self.waypoints[0])
-    self.target_waypoint = 1
-    self.health = self.cfg.game.enemy.types[enemy_type].health
-    self.speed = self.cfg.game.enemy.types[enemy_type].speed
-    self.angle = 0
-    self.original_image = pg.image.load(
-      self.cfg.game.enemy.types[enemy_type].image).convert_alpha()
-    self.image = pg.transform.rotate(self.original_image, self.angle)
-    self.rect = self.image.get_rect()
-    self.rect.center = self.pos
+        self.waypoints = waypoints
+        self.pos = Vector2(self.waypoints[0])
+        self.target_waypoint = 1
+        self.health = self.cfg.game.enemy.types[enemy_type].health
+        self.speed = self.cfg.game.enemy.types[enemy_type].speed
+        self.angle = 0
+        self.original_image = pg.image.load(
+            self.cfg.game.enemy.types[enemy_type].image).convert_alpha()
+        self.image = pg.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
 
-  def update(self, world:World) -> None:
-    self.move(world)
-    self.rotate()
-    self.check_alive(world)
+    def update(self, world: World) -> None:
+        self.move(world)
+        self.rotate()
+        self.check_alive(world)
 
-  def move(self, world:World) -> None:
-    ''' movements of the enemy on the game screen '''
-    # define a target waypoint
-    if self.target_waypoint < len(self.waypoints):
-      self.target = Vector2(self.waypoints[self.target_waypoint])
-      self.movement = self.target - self.pos
-    else:
-      # enemy has reached the end of the path
-      self.kill()
-      world.health -= 1
-      world.missed_enemies += 1
+    def move(self, world: World) -> None:
+        ''' movements of the enemy on the game screen '''
+        # define a target waypoint
+        if self.target_waypoint < len(self.waypoints):
+            self.target = Vector2(self.waypoints[self.target_waypoint])
+            self.movement = self.target - self.pos
+        else:
+            # enemy has reached the end of the path
+            self.kill()
+            world.health -= 1
+            world.missed_enemies += 1
 
-    # calculate distance to target
-    dist = self.movement.length()
-    # check if remaining distance is greater than the enemy speed
-    if dist >= (self.speed * world.game_speed):
-      self.pos += self.movement.normalize() * (self.speed * world.game_speed)
-    else:
-      if dist != 0:
-        self.pos += self.movement.normalize() * dist
-      self.target_waypoint += 1
+        # calculate distance to target
+        dist = self.movement.length()
+        # check if remaining distance is greater than the enemy speed
+        if dist >= (self.speed * world.game_speed):
+            self.pos += self.movement.normalize() * (self.speed * world.game_speed)
+        else:
+            if dist != 0:
+                self.pos += self.movement.normalize() * dist
+            self.target_waypoint += 1
 
-  def rotate(self) -> None:
-    ''' rotate enemy image when turning'''
-    # calculate distance to next waypoint
-    dist = self.target - self.pos
-    # use distance to calculate angle
-    self.angle = math.degrees(math.atan2(-dist[1], dist[0]))
-    # rotate image and update rectangle
-    self.image = pg.transform.rotate(self.original_image, self.angle)
-    self.rect = self.image.get_rect()
-    self.rect.center = self.pos
+    def rotate(self) -> None:
+        ''' rotate enemy image when turning'''
+        # calculate distance to next waypoint
+        dist = self.target - self.pos
+        # use distance to calculate angle
+        self.angle = math.degrees(math.atan2(-dist[1], dist[0]))
+        # rotate image and update rectangle
+        self.image = pg.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
 
-  def check_alive(self, world:World) -> None:
-    if self.health <= 0:
-      world.killed_enemies += 1
-      world.money += self.cfg.game.turret.kill_reward
-      self.kill()
+    def check_alive(self, world: World) -> None:
+        if self.health <= 0:
+            world.killed_enemies += 1
+            world.money += self.cfg.game.turret.kill_reward
+            self.kill()

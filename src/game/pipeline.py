@@ -1,13 +1,13 @@
 
 import click
-import pygame as pg 
+import pygame as pg
 
 from src.game.turret import Turret
 from src.game.world import World
 from src.game.enemy import Enemy
 from src.game.utils import (
-    load_config, 
-    create_game_window, 
+    load_config,
+    create_game_window,
     display_data
 )
 
@@ -16,7 +16,7 @@ from typing import Tuple
 
 
 class TowerDefence:
-    def __init__(self, cfg:EasyDict) -> None:
+    def __init__(self, cfg: EasyDict) -> None:
         ''' initializing game and game variables '''
         self.cfg = cfg
         self.frame = 0
@@ -31,14 +31,13 @@ class TowerDefence:
         # reset world and variables
         self.reset()
 
-
     def reset(self) -> None:
         ''' reset game world and variables '''
         # reset game variables
-        self.game_over = False 
+        self.game_over = False
         self.game_outcome = 0
-        self.level_started = False 
-        self.placing_turrets = False 
+        self.level_started = False
+        self.placing_turrets = False
         self.selected_turret = None
         self.last_enemy_spawn = pg.time.get_ticks()
         self.last_level = pg.time.get_ticks()
@@ -50,10 +49,9 @@ class TowerDefence:
         self.enemy_group.empty()
         self.turret_group.empty()
 
-
     def _create_turret(self, tile_x, tile_y) -> int:
-        ''' function to create turret at given coordinates 
-        
+        ''' function to create turret at given coordinates
+
             Returns:
              -1 if place is not valid
              0 if place is valid and turret is already there
@@ -61,10 +59,10 @@ class TowerDefence:
         '''
         # check if that tile is grass
         tile_num = (tile_y * self.cfg.game.screen.cols) + tile_x
-        if (self.world.tile_map[tile_num] == 7 and 
-            self.world.money >= self.cfg.game.turret.buy_cost):
+        if (self.world.tile_map[tile_num] == 7 and
+                self.world.money >= self.cfg.game.turret.buy_cost):
             # check that there isn't already a turret there
-            space_is_free = True 
+            space_is_free = True
             for turret in self.turret_group:
                 if (tile_x, tile_y) == (turret.tile_x, turret.tile_y):
                     space_is_free = False
@@ -76,7 +74,6 @@ class TowerDefence:
                 self.world.money -= self.cfg.game.turret.buy_cost
             return int(space_is_free)
         return -1
-
 
     def _upgrade_turret(self, tile_x, tile_y):
         ''' function to upgrade turret at given coordinates '''
@@ -92,18 +89,16 @@ class TowerDefence:
                 # deduct cost of turret upgrade
                 self.world.money -= self.cfg.game.turret.upgrade_cost
 
-
     def _check_game_over(self):
         ''' check if game is over with a win or loss '''
         if self.game_over is False:
             # check if player has lost
             if self.world.health <= 0:
-                self.game_over = True 
-                self.game_outcome = -1 # loss
+                self.game_over = True
+                self.game_outcome = -1  # loss
             if self.world.level > self.cfg.game.levels:
-                self.game_over = True 
-                self.game_outcome = 1 # win
-
+                self.game_over = True
+                self.game_outcome = 1  # win
 
     def _check_level_finished(self):
         ''' check if game level is finished '''
@@ -116,19 +111,18 @@ class TowerDefence:
             self.world.reset_level()
             self.world.process_enemies()
 
-
     def _game_process(self):
         ''' function to orchestrate game steps'''
         # checking is game is over
         self._check_game_over()
         if self.level_started is False:
             # starting level
-            if (pg.time.get_ticks() - self.last_level > 
+            if (pg.time.get_ticks() - self.last_level >
                     self.cfg.game.level_spawn_cooldown):
                 self.level_started = True
         else:
             # starting enemy spawn
-            if (pg.time.get_ticks() - self.last_enemy_spawn > 
+            if (pg.time.get_ticks() - self.last_enemy_spawn >
                     self.cfg.game.enemy.spawn_cooldown):
                 if self.world.spawned_enemies < len(self.world.enemy_list):
                     enemy_type = self.world.enemy_list[self.world.spawned_enemies]
@@ -136,11 +130,10 @@ class TowerDefence:
                     self.enemy_group.add(enemy)
                     self.world.spawned_enemies += 1
                     self.last_enemy_spawn = pg.time.get_ticks()
-            
+
             # checking if level finished
             self._check_level_finished()
 
-    
     def _update_ui(self):
         ''' update ui elements with up-to-date game information '''
         # draw world on screen
@@ -149,7 +142,7 @@ class TowerDefence:
         # update enemy and turret groups
         self.enemy_group.update(self.world)
         self.turret_group.update(self.enemy_group, self.world)
-        
+
         # draw enemy and turret groups
         self.enemy_group.draw(self.screen)
         for turret in self.turret_group:
@@ -158,20 +151,19 @@ class TowerDefence:
         # update screen and world
         self.screen, self.world = display_data(
             self.cfg, self.screen, self.world)
-        
-        # update display
-        pg.display.flip()   
 
+        # update display
+        pg.display.flip()
 
     def step(self, action) -> Tuple[int, bool, int]:
         self.frame += 1
-        
-        # values of health and number of killed enemies 
+
+        # values of health and number of killed enemies
         # at the beginning of the step
         step_start_health = self.world.health
         step_killed_enemies = self.world.killed_enemies
 
-        # check if game quit 
+        # check if game quit
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -179,31 +171,30 @@ class TowerDefence:
 
         # perform action TODO logic
         # if action is to buy turret
-        tile_x, tile_y = action 
+        tile_x, tile_y = action
         turret2upgrade = self._create_turret(tile_x, tile_y)
         if not turret2upgrade:
             self._upgrade_turret(tile_x, tile_y)
-        
+
         # process game step
         self._game_process()
 
         # update ui and clock
         self._update_ui()
         self.clock.tick(self.cfg.game.fps)
-        
+
         # constructing reward
         if self.game_over:
             # reward if 100 and -100 for won and lost game, respectively
             reward = self.game_outcome * 100
         else:
-            # if game is in progress, reward is the number of health lost 
-            health_diff = self.world.health - step_start_health 
+            # if game is in progress, reward is the number of health lost
+            health_diff = self.world.health - step_start_health
             # and the number of enemies killed in this step
-            killed_enemies_diff = self.world.killed_enemies - step_killed_enemies 
+            killed_enemies_diff = self.world.killed_enemies - step_killed_enemies
             reward = health_diff + killed_enemies_diff
-        
+
         return reward, self.game_over, self.world.health
- 
 
 
 @click.command(help="")
@@ -219,7 +210,7 @@ def main(cfg):
     while True:
         action = (tile_x, tile_y)
         reward, done, score = game.step(action)
-        #print(counter, reward, done)
+        # print(counter, reward, done)
 
         if done:
             game.reset()
