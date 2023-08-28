@@ -1,9 +1,15 @@
 agent:
   init_gamma: 0
-  init_eps: 0
+  init_eps: 0.1
   max_memory: 10000
 model:
   lr: 1.0e-5
   batch_size: 16
-  loss_function: mseloss
-  optim: adam
+  architecture:
+    encoder: 
+    head: 
+  loss_function: 
+    name: mseloss
+  optim: 
+    name: adam
+  checkpoint_path: 'model_checkpoints'

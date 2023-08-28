@@ -24,11 +24,12 @@ def main(game_cfg, agent_cfg):
 
     while True:
         # get old state
-        state_old = agent.get_state(game)
+        state_old = game.get_state()
 
         # get action
         action = agent.get_action(state_old)
 
+        # game step
         reward, done, score = game.step(action)
         state_new = agent.get_state(game)
 
@@ -51,11 +52,11 @@ def main(game_cfg, agent_cfg):
             # agent statistics logs
             print(f'Game: {agent.n_games} | Score: {score} | Best score: {best_score}')
 
+            # plotting
             scores.append(score)
             total_score += score 
             mean_score = total_score / agent.n_games 
             mean_scores.append(mean_score)
-
             plot_scores(scores, mean_scores)
 
 

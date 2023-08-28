@@ -9,9 +9,24 @@ class QTrainer:
         self.gamma = gamma 
         self.model = model 
         
-        self.optimizer = optim.Adam(model.parameters(), lr=self.lr )
-        self.criterion = nn.MSELoss()
+        self.optimizer = self.create_optimizer()
+        self.criterion = self.create_criterion()
 
+    def create_optimizer(self):
+        if self.cfg.model.optim.name == 'adam':
+            optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
+        else:
+            raise NotImplementedError(
+                f"{self.cfg.model.optim.name} is not implemented")
+        return optimizer
+
+    def create_criterion(self):
+        if self.cfg.model.loss_function.name == 'mseloss':
+            criterion = nn.MSELoss()
+        else:
+            raise NotImplementedError(
+                f"{self.cfg.model.loss_function.name} is not implemented")
+        return criterion
 
     def train_step(self, state, action, reward, next_state, done):
         # list to tensor 

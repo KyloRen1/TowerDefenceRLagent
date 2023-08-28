@@ -15,7 +15,7 @@ class Agent:
         self.batch_size = self.cfg.model.batch_size
         self.memory = deque(maxlen = self.cfg.agent.max_memory)
 
-        self.model = DQN() 
+        self.model = DQN(self.cfg) 
         self.trainer = QTrainer(self.model, lr=self.cfg.model.lr, gamma=self.gamma)
 
     def remember(self, state, action, reward, next_state, done):
@@ -23,7 +23,7 @@ class Agent:
 
     def train_long_memory(self):
         if len(self.memory) > self.batch_size:
-            sample = random.sample(self.memory, self.batch_size) # list of tuples
+            sample = random.sample(self.memory, self.batch_size)
         else:
             sample = self.memory
         
@@ -35,7 +35,6 @@ class Agent:
         self.trainer.train_step(state, action, reward, next_state, done) 
 
     def get_action(self, state):
-        
         if random.rand() < self.eps:
             # random move selection
             move = random.rand
@@ -43,5 +42,4 @@ class Agent:
             # action prediction
             pred = self.model(state)
             move = torch.argmax(pred).item()
-
         return move
