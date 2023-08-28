@@ -30,6 +30,7 @@ def main(game_cfg, agent_cfg, world_speed):
     total_score = 0 
     best_score = 0
 
+    print('Starting training')
     while True:
         # get old state
         state_old = game.get_state()
