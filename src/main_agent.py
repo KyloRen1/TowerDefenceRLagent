@@ -74,7 +74,5 @@ def main(game_cfg, agent_cfg):
             plot_scores(scores, mean_scores)
 
 
-
-
 if __name__ == '__main__':
     main()

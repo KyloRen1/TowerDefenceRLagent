@@ -1,5 +1,6 @@
 import math
 import random
+import torch
 from collections import deque
 import torchvision.transforms as transforms
 
@@ -24,9 +25,10 @@ class Agent:
         self.batch_size = self.cfg.model.batch_size
         self.memory = deque(maxlen = self.cfg.agent.max_memory)
 
-        trans = transforms.Resize((224, 224), antialias=True)
-        model = DQN(self.cfg, self.num_classes) 
-        self.trainer = QTrainer(self.cfg, model, trans)
+        model = DQN(self.cfg, self.num_classes)
+        trans = transforms.Resize((224, 224), antialias=True) 
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.trainer = QTrainer(self.cfg, model, trans, device)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))

@@ -6,13 +6,20 @@ import torchvision.transforms as transforms
 
 
 class QTrainer:
-    def __init__(self, cfg, model:torch.nn.Module, transforms:transforms):
+    def __init__(
+        self, 
+        cfg, 
+        model:torch.nn.Module, 
+        transforms:transforms, 
+        device:torch.device
+    ):
         self.cfg = cfg
+        self.device = device
         self.lr = self.cfg.model.lr 
         self.gamma = self.cfg.agent.init_gamma 
 
-        self.policy_model = model 
-        self.target_model = model
+        self.policy_model = model.to(self.device)
+        self.target_model = model.to(self.device)
 
         self.transforms = transforms
         
@@ -38,7 +45,7 @@ class QTrainer:
     def predict(self, state):
         state = self.preprocess_state(state)
 
-        pred = self.policy_model(state)
+        pred = self.policy_model(state).detach().cpu()
         pred = pred.reshape(self.policy_model.x_classes, self.policy_model.y_classes)
         
         # Find the indices of the maximum element
@@ -53,7 +60,7 @@ class QTrainer:
         state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
         state = self.transforms(state)
         state = torch.unsqueeze(state, 0)
-        return state
+        return state.to(self.device)
 
     def train_step(self, state, action, reward, next_state, done):
         state = self.preprocess_state(state)
