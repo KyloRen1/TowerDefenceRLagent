@@ -28,7 +28,7 @@ class Agent:
             sample = self.memory
         
         states, actions, reward, next_states, dones = zip(*sample)
-        self.trainer.train_step(states, actions, reward, next_states, dones)
+        self.trainer.train_step_batch(states, actions, reward, next_states, dones)
     
     def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done) 
@@ -37,8 +37,8 @@ class Agent:
         if random.random() < self.eps:
             # TODO rate for eps deacrease
             # random move selection
-            move_x = random.randint(self.num_classes[0])
-            move_y = random.randint(self.num_classes[1])
+            move_x = random.randint(0, self.num_classes[0])
+            move_y = random.randint(0, self.num_classes[1])
         else:
             # action prediction
             move_x, move_y = self.trainer.predict(state)

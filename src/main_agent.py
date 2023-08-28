@@ -47,7 +47,7 @@ def main(game_cfg, agent_cfg):
             # train long memory, plot results
             game.reset()
             agent.n_games += 1
-            agent.train_long_memory()
+            #agent.train_long_memory()
 
             if score > best_score:
                 best_score = score 

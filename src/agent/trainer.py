@@ -43,42 +43,26 @@ class QTrainer:
         move_y = torch.argmax(pred[1]).item()
         return (move_x, move_y)
 
+    def train_step_batch(self, state, action, reward, next_state, done):
+        pass
+
     def train_step(self, state, action, reward, next_state, done):
-        # convert list to tensor 
-        state = torch.tensor(state, dtype=torch.float)
-        next_state = torch.tensor(next_state, dtype=torch.float) 
         action = torch.tensor(action, dtype=torch.long)
         reward = torch.tensor(reward, dtype=torch.float)
 
         print(state.shape, next_state.shape, action.shape, reward.shape)
-
-        if len(state.shape) == 3:
-            state = state.permute(2, 1, 0)
-            next_state = next_state.permute(2, 1, 0)
-
-            # unsqueeze all tensors
-            state = torch.unsqueeze(state, 0)
-            next_state = torch.unsqueeze(next_state, 0)
-            action = torch.unsqueeze(action, 0)
-            reward = torch.unsqueeze(reward, 0)
-            done = (done, )
-        print(state.shape, next_state.shape, action.shape, reward.shape)
-    
-        resize = transforms.Resize((224, 224), antialias=True)
-
-        state = resize(state)
-        next_state = resize(next_state)
+        action = torch.unsqueeze(action, 0)
+        reward = torch.unsqueeze(reward, 0)
+        done = (done, )
         print(state.shape, next_state.shape, action.shape, reward.shape)
     
         # 1: predicted Q values with current state
-        pred = self.model(state)
+        pred = self.predict(state)
 
-        target = tuple(pred)
-        for idx in range(len(done)):
-            Q_new = reward[idx]
-            if not done[idx]:
+        Q_new = reward
+        if not done:
                 Q_new = reward[idx] + self.gamma * torch.max(
-                    self.model(next_state[idx]))
+                    self.predict(next_state[idx]))
             
             target[idx][torch.argmax(action).item()] = Q_new
 

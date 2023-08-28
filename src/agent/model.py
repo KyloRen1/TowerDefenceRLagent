@@ -16,7 +16,6 @@ class DQN(nn.Module):
         self.head_y = nn.Linear(1000, n_classes[1])
 
     def forward(self, inp):
-        print("model input shape: ", inp.shape)
         output = self.encoder(inp)
         x = self.head_x(output)
         y = self.head_y(output)
@@ -29,3 +28,27 @@ class DQN(nn.Module):
         # save model checkpoint
         filepath = folder / filename
         torch.save(self.state_dict(), filepath)
+
+
+
+'''
+import torch
+
+# Create a sample matrix
+matrix = torch.tensor([
+    [1, 2, 3],
+    [4, 2, 6],
+    [7, 8, 5]
+])
+
+# Find the indices of the maximum element
+max_values, max_indices = torch.max(matrix.view(-1), dim=0)
+
+# Convert the 1D index to 2D coordinates
+max_x = max_indices // matrix.size(1)
+max_y = max_indices % matrix.size(1)
+
+print("Max Value:", max_values.item())
+print("Max Coordinates (x, y):", max_x.item(), max_y.item())
+
+'''
