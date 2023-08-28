@@ -1,12 +1,12 @@
 from pathlib import Path
-
+from easydict import EasyDict
 import torch 
 import timm
 import torch.nn as nn 
 
 
 class DQN(nn.Module):
-    def __init__(self, cfg, n_classes):
+    def __init__(self, cfg:EasyDict, n_classes: tuple):
         super().__init__()
         self.cfg = cfg
         self.x_classes = n_classes[0] - 1
@@ -21,7 +21,7 @@ class DQN(nn.Module):
         x = self.head(x)
         return x
 
-    def save(self, filename):
+    def save(self, filename:str):
         # create dir is not existant
         folder = Path(self.cfg.model.checkpoint_path)
         folder.mkdir(parents=True, exist_ok=True)

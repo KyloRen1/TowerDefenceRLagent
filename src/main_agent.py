@@ -19,9 +19,11 @@ def main(game_cfg, agent_cfg, world_speed):
     game_cfg = load_config(game_cfg)
     agent_cfg = load_config(agent_cfg)
 
+    # initializing game
     game = TowerDefence(game_cfg)
     game.world.game_speed = world_speed
 
+    # initializing agent
     agent = Agent(agent_cfg, 
         num_classes=(game_cfg.game.screen.rows, game_cfg.game.screen.cols))
 
@@ -64,7 +66,7 @@ def main(game_cfg, agent_cfg, world_speed):
 
             if score > best_score:
                 best_score = score 
-                agent.model.save()
+                agent.model.save('best_model.pth')
             
             # agent statistics logs
             print(f'Game: {agent.n_games} | Score: {score} | Best score: {best_score}')

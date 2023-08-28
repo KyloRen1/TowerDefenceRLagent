@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt 
 from IPython import display
 
-def plot_scores(scores, mean_scores):
+def plot_scores(scores:list, mean_scores:list):
     display.clear_output(wait=True)
     display.display(plt.gcf())
     plt.clf()

@@ -1,14 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
+import numpy as np
+from easydict import EasyDict
 import torchvision.transforms as transforms
 
 
 class QTrainer:
     def __init__(
         self, 
-        cfg, 
+        cfg:EasyDict, 
         model:torch.nn.Module, 
         transforms:transforms, 
         device:torch.device
@@ -42,7 +43,7 @@ class QTrainer:
                 f"{self.cfg.model.loss_function.name} is not implemented")
         return criterion
 
-    def predict(self, state):
+    def predict(self, state:np.array):
         state = self.preprocess_state(state)
 
         pred = self.policy_model(state).detach().cpu()
@@ -56,13 +57,14 @@ class QTrainer:
 
         return (move_x, move_y)
 
-    def preprocess_state(self, state):
+    def preprocess_state(self, state:np.array):
         state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
         state = self.transforms(state)
         state = torch.unsqueeze(state, 0)
         return state.to(self.device)
 
-    def train_step(self, state, action, reward, next_state, done):
+    def train_step(self, state:np.array, action:int, 
+            reward:int, next_state:np.array, done:bool):
         state = self.preprocess_state(state)
         next_state = self.preprocess_state(next_state)
         
