@@ -30,9 +30,11 @@ class QTrainer:
 
     def train_step(self, state, action, reward, next_state, done):
         # list to tensor 
+        # TODO convert list to tensors
 
         if len(state.shape) == 1:
             # unsqueeze all tensors
+            # TODO unsqueeze all tensors
             state = torch.unsqueeze(state, 0)
 
         # 1: predicted Q values with current state
@@ -47,7 +49,6 @@ class QTrainer:
             target[idx][torch.argmax(action).item()] = Q_new
 
         # 2: q_new = r + gamma * max(next_pred Q values) -> only do if done
-
 
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)

@@ -2,5 +2,6 @@ pygame==2.5.0
 click==8.1.6
 easydict==1.10
 PyYAML==6.0.1
+timm==0.9.5
 
 pytest==7.4.0

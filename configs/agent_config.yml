@@ -1,13 +1,12 @@
 agent:
   init_gamma: 0
-  init_eps: 0.1
+  init_eps: 0
   max_memory: 10000
 model:
   lr: 1.0e-5
   batch_size: 16
   architecture:
-    encoder: 
-    head: 
+    encoder: resnet18
   loss_function: 
     name: mseloss
   optim: 

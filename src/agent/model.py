@@ -1,20 +1,21 @@
 from pathlib import Path
 
 import torch 
+import timm
 import torch.nn as nn 
 
 
 class DQN(nn.Module):
-    def __init__(self, cfg):
+    def __init__(self, cfg, n_classes):
         super().__init__()
         self.cfg = cfg
 
-        self.encoder = None 
-        self.linear = nn.Linear(hidden_size, output_size)
+        self.encoder = timm.create_model(
+            self.cfg.model.architecture.encoder, pretrained=True, num_classes=n_classes)
 
     def forward(self, x):
-        x = self.encoder(x)
-        output = self.linear(x)
+        # TODO predict two coordinates
+        output = self.encoder(x)
         return output
 
     def save(self, filename):

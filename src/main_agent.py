@@ -15,7 +15,8 @@ def main(game_cfg, agent_cfg):
     # state: image of the screen
 
     game = TowerDefence(game_cfg)
-    agent = Agent(agent_cfg)
+    agent = Agent(agent_cfg, 
+        num_classes=game_cfg.game.screen.rows * game_cfg.game.screen.cols)
 
     scores = list()
     mean_scores = list()
