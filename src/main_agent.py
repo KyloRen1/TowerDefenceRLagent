@@ -18,6 +18,8 @@ def main(game_cfg, agent_cfg):
     agent_cfg = load_config(agent_cfg)
 
     game = TowerDefence(game_cfg)
+    game.world.game_speed = 2
+
     agent = Agent(agent_cfg, 
         num_classes=(game_cfg.game.screen.rows, game_cfg.game.screen.cols))
 
@@ -39,6 +41,14 @@ def main(game_cfg, agent_cfg):
 
         # train short memory
         agent.train_short_memory(state_old, action, reward, state_new, done)
+
+        target_net_state_dict = agent.trainer.target_model.state_dict()
+        policy_net_state_dict = agent.trainer.policy_model.state_dict()
+        for key in policy_net_state_dict:
+            target_net_state_dict[key] = (
+                policy_net_state_dict[key] * agent_cfg.agent.tau + 
+                target_net_state_dict[key] * (1 - agent_cfg.agent.tau)
+            )
 
         # remember 
         agent.remember(state_old, action, reward, state_new, done)

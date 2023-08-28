@@ -1,7 +1,10 @@
 agent:
   init_gamma: 0.9
   init_eps: 0.3
+  end_eps: 0.1
+  eps_decay: 1000
   max_memory: 10000
+  tau: 0.005
 model:
   lr: 1.0e-5
   batch_size: 16

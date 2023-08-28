@@ -9,17 +9,17 @@ class DQN(nn.Module):
     def __init__(self, cfg, n_classes):
         super().__init__()
         self.cfg = cfg
+        self.x_classes = n_classes[0] - 1
+        self.y_classes = n_classes[1] - 1
 
         self.encoder = timm.create_model(
             self.cfg.model.architecture.encoder, pretrained=True)
-        self.head_x = nn.Linear(1000, n_classes[0])
-        self.head_y = nn.Linear(1000, n_classes[1])
+        self.head = nn.Linear(1000, self.x_classes * self.y_classes)
 
     def forward(self, inp):
-        output = self.encoder(inp)
-        x = self.head_x(output)
-        y = self.head_y(output)
-        return (x, y)
+        x = self.encoder(inp)
+        x = self.head(x)
+        return x
 
     def save(self, filename):
         # create dir is not existant

@@ -1,1 +1,0 @@
-python -m src.main_game --cfg configs/game_config.yml

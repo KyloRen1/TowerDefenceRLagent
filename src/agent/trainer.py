@@ -6,18 +6,22 @@ import torchvision.transforms as transforms
 
 
 class QTrainer:
-    def __init__(self, cfg, model:torch.nn.Module):
+    def __init__(self, cfg, model:torch.nn.Module, transforms:transforms):
         self.cfg = cfg
         self.lr = self.cfg.model.lr 
         self.gamma = self.cfg.agent.init_gamma 
-        self.model = model 
+
+        self.policy_model = model 
+        self.target_model = model
+
+        self.transforms = transforms
         
         self.optimizer = self.create_optimizer()
         self.criterion = self.create_criterion()
 
     def create_optimizer(self):
         if self.cfg.model.optim.name == 'adam':
-            optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
+            optimizer = optim.Adam(self.policy_model.parameters(), lr=self.lr)
         else:
             raise NotImplementedError(
                 f"{self.cfg.model.optim.name} is not implemented")
@@ -32,44 +36,42 @@ class QTrainer:
         return criterion
 
     def predict(self, state):
-        # TODO refactor
-        state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
-        resize = transforms.Resize((224, 224), antialias=True)
-        state = resize(state)
-        state = torch.unsqueeze(state, 0)
+        state = self.preprocess_state(state)
 
-        pred = self.model(state)
-        move_x = torch.argmax(pred[0]).item()
-        move_y = torch.argmax(pred[1]).item()
+        pred = self.policy_model(state)
+        pred = pred.reshape(self.policy_model.x_classes, self.policy_model.y_classes)
+        
+        # Find the indices of the maximum element
+        max_values, max_indices = torch.max(pred.view(-1), dim=0)
+        # Convert the 1D index to 2D coordinates
+        move_x = max_indices // pred.size(1)
+        move_y = max_indices % pred.size(1)
+
         return (move_x, move_y)
 
-    def train_step_batch(self, state, action, reward, next_state, done):
-        pass
+    def preprocess_state(self, state):
+        state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
+        state = self.transforms(state)
+        state = torch.unsqueeze(state, 0)
+        return state
 
     def train_step(self, state, action, reward, next_state, done):
-        action = torch.tensor(action, dtype=torch.long)
-        reward = torch.tensor(reward, dtype=torch.float)
+        state = self.preprocess_state(state)
+        next_state = self.preprocess_state(next_state)
+        
+        # 1. compute 
+        state_action_values = self.policy_model(state)
 
-        print(state.shape, next_state.shape, action.shape, reward.shape)
-        action = torch.unsqueeze(action, 0)
-        reward = torch.unsqueeze(reward, 0)
-        done = (done, )
-        print(state.shape, next_state.shape, action.shape, reward.shape)
-    
-        # 1: predicted Q values with current state
-        pred = self.predict(state)
+        with torch.no_grad():
+            next_state_values = self.target_model(next_state)
 
-        Q_new = reward
-        if not done:
-                Q_new = reward[idx] + self.gamma * torch.max(
-                    self.predict(next_state[idx]))
-            
-            target[idx][torch.argmax(action).item()] = Q_new
+        expected_state_action_values = (next_state_values * self.gamma) + reward
 
-        # 2: q_new = r + gamma * max(next_pred Q values) -> only do if done
-
+        # optimize the model
         self.optimizer.zero_grad()
-        loss = self.criterion(target, pred)
+        loss = self.criterion(state_action_values, expected_state_action_values)
         loss.backward()
 
+        # In-place gradient clipping
+        torch.nn.utils.clip_grad_value_(self.policy_model.parameters(), 100)
         self.optimizer.step()
