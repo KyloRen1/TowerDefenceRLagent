@@ -1,7 +1,9 @@
 import click
 import pygame as pg
 
-from src.game.pipeline import TowerDefence
+from src.game.tower_defence import TowerDefence
+from src.agent.pipeline import Agent
+from src.agent.utils import plot_scores
 
 
 @click.command(help="")
@@ -13,8 +15,50 @@ def main(game_cfg, agent_cfg):
     # state: image of the screen
 
     game = TowerDefence(game_cfg)
+    agent = Agent(agent_cfg)
 
-    pass
+    scores = list()
+    mean_scores = list()
+    total_score = 0 
+    best_score = 0
+
+    while True:
+        # get old state
+        state_old = agent.get_state(game)
+
+        # get action
+        action = agent.get_action(state_old)
+
+        reward, done, score = game.step(action)
+        state_new = agent.get_state(game)
+
+        # train short memory
+        agent.train_short_memory(state_old, action, reward, state_new, done)
+
+        # remember 
+        agent.remember(state_old, action, reward, state_new, done)
+
+        if done:
+            # train long memory, plot results
+            game.reset()
+            agent.n_games += 1
+            agent.train_long_memory()
+
+            if score > best_score:
+                best_score = score 
+                agent.model.save()
+            
+            # agent statistics logs
+            print(f'Game: {agent.n_games} | Score: {score} | Best score: {best_score}')
+
+            scores.append(score)
+            total_score += score 
+            mean_score = total_score / agent.n_games 
+            mean_scores.append(mean_score)
+
+            plot_scores(scores, mean_scores)
+
+
 
 
 if __name__ == '__main__':

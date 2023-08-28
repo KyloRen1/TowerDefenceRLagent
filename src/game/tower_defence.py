@@ -155,6 +155,10 @@ class TowerDefence:
         # update display
         pg.display.flip()
 
+    def get_state(self):
+        ''' return screen image '''
+        return self.screen
+
     def step(self, action) -> Tuple[int, bool, int]:
         self.frame += 1
 
