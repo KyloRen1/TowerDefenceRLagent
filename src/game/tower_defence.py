@@ -157,7 +157,7 @@ class TowerDefence:
 
     def get_state(self):
         ''' return screen image '''
-        return self.screen
+        return pg.surfarray.array3d(self.screen)
 
     def step(self, action) -> Tuple[int, bool, int]:
         self.frame += 1

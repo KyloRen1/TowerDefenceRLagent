@@ -1,5 +1,4 @@
 import random
-import torch
 from collections import deque
 
 from src.agent.model import DQN 
@@ -17,7 +16,7 @@ class Agent:
         self.memory = deque(maxlen = self.cfg.agent.max_memory)
 
         self.model = DQN(self.cfg, self.num_classes) 
-        self.trainer = QTrainer(self.model, lr=self.cfg.model.lr, gamma=self.gamma)
+        self.trainer = QTrainer(self.cfg, self.model)
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
@@ -31,18 +30,16 @@ class Agent:
         states, actions, reward, next_states, dones = zip(*sample)
         self.trainer.train_step(states, actions, reward, next_states, dones)
     
-    def tran_short_memory(self, state, action, reward, next_state, done):
+    def train_short_memory(self, state, action, reward, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done) 
 
     def get_action(self, state):
-        if random.rand() < self.eps:
+        if random.random() < self.eps:
             # TODO rate for eps deacrease
             # random move selection
             move_x = random.randint(self.num_classes[0])
             move_y = random.randint(self.num_classes[1])
         else:
             # action prediction
-            pred = self.model(state)
-            move_x = torch.argmax(pred[0]).item()
-            move_y = torch.argmax(pred[1]).item()
+            move_x, move_y = self.trainer.predict(state)
         return move_x, move_y

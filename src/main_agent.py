@@ -2,6 +2,7 @@ import click
 import pygame as pg
 
 from src.game.tower_defence import TowerDefence
+from src.game.utils import load_config
 from src.agent.pipeline import Agent
 from src.agent.utils import plot_scores
 
@@ -13,10 +14,12 @@ def main(game_cfg, agent_cfg):
     # actions: positions to place the turret; upgrade it
     # rewards: +1 for killed enemy, +100 for won game, -100 for lost game, -10 for lost life
     # state: image of the screen
+    game_cfg = load_config(game_cfg)
+    agent_cfg = load_config(agent_cfg)
 
     game = TowerDefence(game_cfg)
     agent = Agent(agent_cfg, 
-        num_classes=game_cfg.game.screen.rows * game_cfg.game.screen.cols)
+        num_classes=(game_cfg.game.screen.rows, game_cfg.game.screen.cols))
 
     scores = list()
     mean_scores = list()
@@ -32,7 +35,7 @@ def main(game_cfg, agent_cfg):
 
         # game step
         reward, done, score = game.step(action)
-        state_new = agent.get_state(game)
+        state_new = game.get_state()
 
         # train short memory
         agent.train_short_memory(state_old, action, reward, state_new, done)

@@ -11,12 +11,16 @@ class DQN(nn.Module):
         self.cfg = cfg
 
         self.encoder = timm.create_model(
-            self.cfg.model.architecture.encoder, pretrained=True, num_classes=n_classes)
+            self.cfg.model.architecture.encoder, pretrained=True)
+        self.head_x = nn.Linear(1000, n_classes[0])
+        self.head_y = nn.Linear(1000, n_classes[1])
 
-    def forward(self, x):
-        # TODO predict two coordinates
-        output = self.encoder(x)
-        return output
+    def forward(self, inp):
+        print("model input shape: ", inp.shape)
+        output = self.encoder(inp)
+        x = self.head_x(output)
+        y = self.head_y(output)
+        return (x, y)
 
     def save(self, filename):
         # create dir is not existant

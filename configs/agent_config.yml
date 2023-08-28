@@ -1,5 +1,5 @@
 agent:
-  init_gamma: 0
+  init_gamma: 0.9
   init_eps: 0
   max_memory: 10000
 model:
