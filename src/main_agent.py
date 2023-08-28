@@ -10,7 +10,9 @@ from src.agent.utils import plot_scores
 @click.command(help="")
 @click.option("--game-cfg", type=str, help="game config file path")
 @click.option("--agent-cfg", type=str, help="agent config file path")
-def main(game_cfg, agent_cfg):
+@click.option("--world-speed", type=int, default=2, 
+    help="speed of the enemies in the world")
+def main(game_cfg, agent_cfg, world_speed):
     # actions: positions to place the turret; upgrade it
     # rewards: +1 for killed enemy, +100 for won game, -100 for lost game, -10 for lost life
     # state: image of the screen
@@ -18,7 +20,7 @@ def main(game_cfg, agent_cfg):
     agent_cfg = load_config(agent_cfg)
 
     game = TowerDefence(game_cfg)
-    game.world.game_speed = 2
+    game.world.game_speed = world_speed
 
     agent = Agent(agent_cfg, 
         num_classes=(game_cfg.game.screen.rows, game_cfg.game.screen.cols))
