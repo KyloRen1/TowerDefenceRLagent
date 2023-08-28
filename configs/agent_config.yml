@@ -3,7 +3,7 @@ agent:
   init_eps: 0.3
   end_eps: 0.1
   eps_decay: 1000
-  max_memory: 10000
+  max_memory: 100
   tau: 0.005
 model:
   lr: 1.0e-5

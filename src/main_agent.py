@@ -1,5 +1,5 @@
 import click
-import pygame as pg
+import time
 
 from src.game.tower_defence import TowerDefence
 from src.game.utils import load_config
@@ -64,9 +64,9 @@ def main(game_cfg, agent_cfg, world_speed):
             agent.n_games += 1
             #agent.train_long_memory()
 
-            if score > best_score:
+            if score >= best_score:
                 best_score = score 
-                agent.model.save('best_model.pth')
+                agent.trainer.policy_model.save('best_model.pth')
             
             # agent statistics logs
             print(f'Game: {agent.n_games} | Score: {score} | Best score: {best_score}')
@@ -77,6 +77,8 @@ def main(game_cfg, agent_cfg, world_speed):
             mean_score = total_score / agent.n_games 
             mean_scores.append(mean_score)
             plot_scores(scores, mean_scores)
+
+            time.sleep(10)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 game: 
   name: Tower Defence
   fps: 60
-  levels: 15
+  levels: 3 #15
   level_complete_reward: 100
   level_spawn_cooldown: 500
 
@@ -24,7 +24,7 @@ game:
     map_image: src/assets/levels/level.png
     world_data: src/assets/levels/level.tmj
     money: 650
-    health: 5
+    health: 3
 
   # button parameters
   button:
