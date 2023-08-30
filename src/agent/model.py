@@ -13,7 +13,7 @@ class DQN(nn.Module):
         self.y_classes = n_classes[1] - 1
 
         self.encoder = timm.create_model(
-            self.cfg.model.architecture.encoder, pretrained=True)
+            self.cfg.model.architecture.encoder, pretrained=False)
         self.head = nn.Linear(1000, self.x_classes * self.y_classes)
 
     def forward(self, inp):

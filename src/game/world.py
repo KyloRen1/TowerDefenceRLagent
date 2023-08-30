@@ -45,6 +45,7 @@ class World():
 
     def process_enemies(self) -> None:
         ''' adding enemies to the game screen '''
+        print(self.level, len(self.cfg.game.enemy.levels))
         enemies = self.cfg.game.enemy.levels[self.level - 1]
         for enemy_type in enemies:
             enemies_to_spawn = enemies[enemy_type]

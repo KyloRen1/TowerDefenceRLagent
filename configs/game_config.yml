@@ -1,7 +1,7 @@
 game: 
   name: Tower Defence
-  fps: 60
-  levels: 3 #15
+  fps: 45
+  levels: 15
   level_complete_reward: 100
   level_spawn_cooldown: 500
 

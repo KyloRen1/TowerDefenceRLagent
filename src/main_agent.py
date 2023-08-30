@@ -1,11 +1,15 @@
 import click
 import time
+import os
 
 from src.game.tower_defence import TowerDefence
 from src.game.utils import load_config
 from src.agent.pipeline import Agent
 from src.agent.utils import plot_scores
 
+os.environ["TORCH_HOME"] = "./.cache"
+os.environ["TORCH_EXTENSIONS_DIR"] = "./.cache"
+os.environ["TRANSFORMERS_CACHE"] = "./.cache"
 
 @click.command(help="")
 @click.option("--game-cfg", type=str, help="game config file path")
@@ -67,6 +71,7 @@ def main(game_cfg, agent_cfg, world_speed):
             if score >= best_score:
                 best_score = score 
                 agent.trainer.policy_model.save('best_model.pth')
+                agent.trainer.policy_model.save(f'model_{agent.n_games}.pth')
             
             # agent statistics logs
             print(f'Game: {agent.n_games} | Score: {score} | Best score: {best_score}')

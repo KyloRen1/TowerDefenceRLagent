@@ -198,7 +198,7 @@ class TowerDefence:
             killed_enemies_diff = self.world.killed_enemies - step_killed_enemies
             reward = health_diff + killed_enemies_diff
 
-        return reward, self.game_over, self.world.health
+        return reward, self.game_over, max(0, self.world.health) * 10 + self.world.money
 
 
 @click.command(help="")
