@@ -1,8 +1,8 @@
 # Tower Defence RL Agent
 
-<div style="display: flex; justify-content: center;">
-    <img src="assets/game.gif" alt="GIF 1" width="50%">
-</div>
+<p align="center">
+  <img src="assets/game.gif" alt="GIF 1" width="50%">
+</p>
 
 </br>
 
