@@ -6,7 +6,7 @@
 
 </br>
 
-This project is an implementation of [Tower Defence](https://www.youtube.com/watch?v=L8ypSXwyBds) game in classical setting where you can play it by your own and a `gym`-like environment version to train RL agents. 
+This project is an implementation of a classical [Tower Defence](https://www.youtube.com/watch?v=L8ypSXwyBds) game, which allows you to play it on your own, and it also includes a `gym`-like environment for training RL agents.
 
 ### Current progress
 
