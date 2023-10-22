@@ -1,12 +1,14 @@
 # Tower Defence RL Agent
 
+<div style="display: flex; justify-content: center;">
+    <img src="assets/game.gif" alt="GIF 1" width="50%">
+</div>
 
-![](assets/gam.gif)
-
+</br>
 
 This project is an implementation of [Tower Defence](https://www.youtube.com/watch?v=L8ypSXwyBds) game in classical setting where you can play it by your own and a `gym`-like environment version to train RL agents. 
 
-#### Current progress
+### Current progress
 
 - [x] PyGame Tower Defence
 - [x] Tower Defence as gym environment
@@ -20,7 +22,7 @@ This project is an implementation of [Tower Defence](https://www.youtube.com/wat
 
 1. Clone repository
 ```python
-https://github.com/KyloRen1/TowerDefenceRLagent
+git clone https://github.com/KyloRen1/TowerDefenceRLagent
 ```
 
 2. Create python environment
