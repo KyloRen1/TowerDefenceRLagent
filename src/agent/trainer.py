@@ -68,7 +68,7 @@ class QTrainer:
         state = self.preprocess_state(state)
         next_state = self.preprocess_state(next_state)
         
-        # 1. compute 
+        # compute Q table 
         state_action_values = self.policy_model(state)
 
         with torch.no_grad():

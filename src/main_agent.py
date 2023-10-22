@@ -34,7 +34,7 @@ def main(game_cfg, agent_cfg, world_speed):
     scores = list()
     mean_scores = list()
     total_score = 0 
-    best_score = 0
+    best_score = -1e10
 
     print('Starting training')
     while True:
@@ -68,6 +68,7 @@ def main(game_cfg, agent_cfg, world_speed):
             agent.n_games += 1
             #agent.train_long_memory()
 
+            agent.trainer.policy_model.save('latest_model.pth')
             if score >= best_score:
                 best_score = score 
                 agent.trainer.policy_model.save('best_model.pth')

@@ -14,4 +14,4 @@ model:
     name: mseloss
   optim: 
     name: adam
-  checkpoint_path: 'model_checkpoints'
+  checkpoint_path: 'checkpoints'

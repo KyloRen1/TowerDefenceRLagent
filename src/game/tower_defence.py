@@ -190,15 +190,15 @@ class TowerDefence:
         # constructing reward
         if self.game_over:
             # reward if 100 and -100 for won and lost game, respectively
-            reward = self.game_outcome * 100
+            reward = self.game_outcome * 1000
         else:
             # if game is in progress, reward is the number of health lost
             health_diff = self.world.health - step_start_health
             # and the number of enemies killed in this step
             killed_enemies_diff = self.world.killed_enemies - step_killed_enemies
-            reward = health_diff + killed_enemies_diff
+            reward = health_diff * 10 + killed_enemies_diff
 
-        return reward, self.game_over, max(0, self.world.health) * 10 + self.world.money
+        return reward, self.game_over, reward + self.world.level * 10
 
 
 @click.command(help="")
