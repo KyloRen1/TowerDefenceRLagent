@@ -1,7 +1,7 @@
 agent:
   init_gamma: 0.9
   init_eps: 0.3
-  end_eps: 0.1
+  end_eps: 0.05
   eps_decay: 1000
   max_memory: 100
   tau: 0.005
@@ -14,4 +14,4 @@ model:
     name: mseloss
   optim: 
     name: adam
-  checkpoint_path: 'checkpoints'
+  checkpoint_path: 'checkpoints_long'

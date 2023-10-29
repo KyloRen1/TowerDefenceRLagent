@@ -58,16 +58,25 @@ class QTrainer:
         return (move_x, move_y)
 
     def preprocess_state(self, state:np.array):
-        state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
-        state = self.transforms(state)
-        state = torch.unsqueeze(state, 0)
+        if isinstance(state, tuple):
+            state = [
+                torch.tensor(el, dtype=torch.float).permute(2, 1, 0) for el in state]
+            state = [self.transforms(el) for el in state]
+            state = torch.stack(state)
+        else:
+            state = torch.tensor(state, dtype=torch.float).permute(2, 1, 0)
+            state = self.transforms(state)
+            state = torch.unsqueeze(state, 0)
         return state.to(self.device)
 
     def train_step(self, state:np.array, action:int, 
             reward:int, next_state:np.array, done:bool):
         state = self.preprocess_state(state)
         next_state = self.preprocess_state(next_state)
-        
+
+        if isinstance(reward, tuple):
+            reward = torch.tensor(reward).unsqueeze(1)
+
         # compute Q table 
         state_action_values = self.policy_model(state)
 

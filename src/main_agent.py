@@ -66,7 +66,7 @@ def main(game_cfg, agent_cfg, world_speed):
             # train long memory, plot results
             game.reset()
             agent.n_games += 1
-            #agent.train_long_memory()
+            agent.train_long_memory()
 
             agent.trainer.policy_model.save('latest_model.pth')
             if score >= best_score:

@@ -48,6 +48,7 @@ class Agent:
     def get_action(self, state):
         eps = self.end_eps + (self.start_eps - self.end_eps) * math.exp(
             -1 * self.n_steps / self.eps_decay)
+        self.n_steps += 1
         if random.random() < eps:
             # random move selection
             move_x = random.randint(0, self.num_classes[0] - 1)

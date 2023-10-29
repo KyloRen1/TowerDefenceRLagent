@@ -96,7 +96,7 @@ class TowerDefence:
             if self.world.health <= 0:
                 self.game_over = True
                 self.game_outcome = -1  # loss
-            if self.world.level > self.cfg.game.levels:
+            if self.world.level > self.cfg.game.levels - 1:
                 self.game_over = True
                 self.game_outcome = 1  # win
 
@@ -191,6 +191,8 @@ class TowerDefence:
         if self.game_over:
             # reward if 100 and -100 for won and lost game, respectively
             reward = self.game_outcome * 1000
+            reward += self.world.health
+            reward += self.world.money
         else:
             # if game is in progress, reward is the number of health lost
             health_diff = self.world.health - step_start_health
@@ -198,7 +200,7 @@ class TowerDefence:
             killed_enemies_diff = self.world.killed_enemies - step_killed_enemies
             reward = health_diff * 10 + killed_enemies_diff
 
-        return reward, self.game_over, reward + self.world.level * 10
+        return reward, self.game_over, reward + self.world.level * 10 
 
 
 @click.command(help="")
